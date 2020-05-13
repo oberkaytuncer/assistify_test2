@@ -20,7 +20,11 @@ class FirebaseAuthService implements AuthBase {
   }
 
   User _userFromFirebase(FirebaseUser user) {
-    if (user == null) return null; //buraya bakacaksın bi ihtimal
+    if (user == null) {
+      return null;
+    } else{
+      
+    }
 
     User convertedUser = User(userID: user.uid, email: user.email);
 
@@ -126,14 +130,8 @@ class FirebaseAuthService implements AuthBase {
 
   @override
   Future<User> signInWithEmailAndPassword(String email, String password) async {
-    try {
-      AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
-      return _userFromFirebase(result.user);
-    } catch (e) {
-      debugPrint('Hata: firebase_auth_service -> signInWithEmailAndPassword' +
-          e.toString());
-      return null;
-    }
+    AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: password);
+    return _userFromFirebase(result.user);
   }
 }

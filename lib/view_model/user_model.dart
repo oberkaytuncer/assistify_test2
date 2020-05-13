@@ -128,10 +128,6 @@ class UserModel with ChangeNotifier implements AuthBase {
         return _user;
       } else
         return null;
-    } catch (e) {
-      debugPrint(
-          'Hata: user_model -> signInWithEmailAndPassword' + e.toString());
-      return null;
     } finally {
       state = ViewState.Idle;
     }

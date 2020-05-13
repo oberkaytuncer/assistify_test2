@@ -4,6 +4,7 @@ import 'package:flutter_messaging_app/app/error_exception.dart';
 import 'package:flutter_messaging_app/common_widget/buttons/flat_button.dart';
 import 'package:flutter_messaging_app/common_widget/buttons/gradient_button.dart';
 import 'package:flutter_messaging_app/common_widget/cards/my_text_field.dart';
+import 'package:flutter_messaging_app/common_widget/platform_sensetive_widget/platform_sensetive_alert_dialog.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
@@ -38,8 +39,11 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
               'İşlem tamam: email_and_pass_signin_signout -> _signedInUser . Email ve şifre ile oturum açan kullanıcı ID: ' +
                   _signedInUser.userID);
       } on PlatformException catch (e) {
-        debugPrint('Hata: email_and_pass_signin_signout -> FormType.SignIn ' +
-            e.code.toString());
+        AlertDialogPlatformSensetive(
+          title: 'Kullanıcı Girişi Hata',
+          content: Errors.showError(e.code),
+          mainActionButtonText: 'Tamam',
+        ).show(context);
       }
     } else {
       try {
@@ -49,27 +53,11 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
           print('Email ve şifre ile yeni kullanıcı yaratılan ID: ' +
               _createdNewUser.userID);
       } on PlatformException catch (e) {
-        debugPrint('Hata: email_and_pass_signin_signout -> FormType.SignUp ' +
-            Errors.showError(e.code));
-
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Kullanıcı oluşturma hatası'),
-              content: Text(
-                Errors.showError(e.code),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('Tamam')),
-              ],
-            );
-          },
-        );
+        AlertDialogPlatformSensetive(
+          title: 'Kullanıcı Oluşturma Hata',
+          content: Errors.showError(e.code),
+          mainActionButtonText: 'Tamam',
+        ).show(context);
       }
     }
   }

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/locator.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/services/auth_base.dart';
@@ -21,7 +20,12 @@ class UserRepository implements AuthBase {
     if (appMode == AppMode.DEBUG) {
       return await _fakeAuthenticationService.currentUser();
     } else {
-      return await _firebaseAuthService.currentUser();
+      User _user = await _firebaseAuthService.currentUser();
+
+      User _readedUserFromFirestore =
+          await _firestoreDBService.readUser(_user.userID);
+
+      return _readedUserFromFirestore;
     }
   }
 
@@ -108,17 +112,12 @@ class UserRepository implements AuthBase {
       return await _fakeAuthenticationService.signInWithEmailAndPassword(
           email, password);
     } else {
-      try {
-        User _user = await _firebaseAuthService.signInWithEmailAndPassword(
-            email, password);
+      User _user = await _firebaseAuthService.signInWithEmailAndPassword(
+          email, password);
 
-        User _readedUserFromFirestore =
-            await _firestoreDBService.readUser(_user.userID);
-        return _readedUserFromFirestore;
-      } catch (e) {
-        debugPrint('Hata: user_repository -> signInWithEmailAndPassword' +
-            e.toString());
-      }
+      User _readedUserFromFirestore =
+          await _firestoreDBService.readUser(_user.userID);
+      return _readedUserFromFirestore;
     }
   }
 }
