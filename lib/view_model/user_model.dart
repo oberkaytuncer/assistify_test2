@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/locator.dart';
 import 'package:flutter_messaging_app/model/user.dart';
@@ -153,12 +155,18 @@ class UserModel with ChangeNotifier implements AuthBase {
   }
 
   Future<bool> updateUserName(String userID, String newUserName) async {
-   
     var result = await _userRepository.updateUserName(userID, newUserName);
-    if(result){
-       _user.userName = newUserName;
-    } 
-  
-     return result;
+    if (result) {
+      _user.userName = newUserName;
+    }
+
+    return result;
+  }
+
+  Future<String> uploadFile(
+      String userID, String fileType, File willUploadFile) async {
+    var url =
+        await _userRepository.uploadFile(userID, fileType, willUploadFile);
+    return url;
   }
 }

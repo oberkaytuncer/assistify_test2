@@ -7,7 +7,7 @@ class User {
   final String userID;
   String email;
   String userName;
-  String profileURL;
+  String profilePhotoURL;
   DateTime createdAt;
   DateTime updatedAt;
   int level;
@@ -23,7 +23,7 @@ class User {
 
   @override
   String toString() {
-    return 'User{userID: $userID, email: $email, userName: $userName, profileURL: $profileURL, createdAt: $createdAt, updatedAt: $updatedAt, level: $level, activeClient: $activeClient, totalLesson: $totalLesson, gsmNumber: $gsmNumber, tall: $tall, weight: $weight, website: $website, cv: $cv, languagePreference: $languagePreference, membershipPackage: $membershipPackage } ';
+    return 'User{userID: $userID, email: $email, userName: $userName, profilePhotoURL: $profilePhotoURL, createdAt: $createdAt, updatedAt: $updatedAt, level: $level, activeClient: $activeClient, totalLesson: $totalLesson, gsmNumber: $gsmNumber, tall: $tall, weight: $weight, website: $website, cv: $cv, languagePreference: $languagePreference, membershipPackage: $membershipPackage } ';
   }
 
   User({@required this.userID, @required this.email});
@@ -34,8 +34,8 @@ class User {
       'email': email,
       'userName': userName ??
           email.substring(0, email.indexOf('@')) + generateRandomNumber(),
-      'profileURL':
-          profileURL ?? 'https://www.assistify.co/resimler/assLogo.png',
+      'profilePhotoURL':
+          profilePhotoURL ?? 'https://www.assistify.co/resimler/assLogo.png',
       'createdAt': createdAt ??
           FieldValue
               .serverTimestamp(), //burada firestorun kendi server'a yazılma saatini alıyoruz burada.
@@ -57,7 +57,7 @@ class User {
       : userID = map['userID'],
         email = map['email'],
         userName = map['userName'],
-        profileURL = map['profileURL'],
+        profilePhotoURL = map['profilePhotoURL'],
         createdAt = (map['createdAt'] as Timestamp).toDate(),
         updatedAt = (map['updatedAt'] as Timestamp).toDate(),
         level = map['level'],

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/common_widget/buttons/gradient_button.dart';
 import 'package:flutter_messaging_app/common_widget/platform_sensetive_widget/platform_sensetive_alert_dialog.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -11,6 +14,7 @@ class ProfileTab extends StatefulWidget {
 
 class _ProfileTabState extends State<ProfileTab> {
   TextEditingController _controllerUserName;
+  File _profilePhoto;
 
   @override
   void initState() {
@@ -24,12 +28,33 @@ class _ProfileTabState extends State<ProfileTab> {
     super.dispose();
   }
 
+  void _takeAPhoto() async {
+    var newProfilePhoto =
+        await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      _profilePhoto = newProfilePhoto;
+      Navigator.of(context).pop();
+    });
+  }
+
+  void _chooseFromLibrary() async {
+    var newProfilePhoto =
+        await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _profilePhoto = newProfilePhoto;
+      Navigator.of(context).pop();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     UserModel _userModel = Provider.of<UserModel>(context);
     _controllerUserName.text = _userModel.user.userName;
 
     print('Profil sayfasındaki user değeleri: ' + _userModel.user.toString());
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
@@ -52,11 +77,42 @@ class _ProfileTabState extends State<ProfileTab> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                      height: 150,
-                      width: 100,
-                      child: Image(
-                        image: NetworkImage(_userModel.user.profileURL),
+                    child: GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListTile(
+                                  leading: Icon(Icons.camera),
+                                  title: Text('Kameradan Çek'),
+                                  onTap: () {
+                                    _takeAPhoto();
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.image),
+                                  title: Text('Galeriden Seç'),
+                                  onTap: () {
+                                    _chooseFromLibrary();
+                                  },
+                                ),
+                                ListTile(),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        height: 150,
+                        width: 100,
+                        child: _profilePhoto == null
+                            ? Image(
+                                image: NetworkImage(_userModel.user.profilePhotoURL),
+                              )
+                            : Image.file(_profilePhoto),
                       ),
                     ),
                   ),
@@ -88,6 +144,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 buttonText: 'Değişiklikleri kaydet',
                 onPressed: () {
                   _updateUserName(context);
+                  _updateProfilePhoto(context);
                 },
               ),
             ],
@@ -139,13 +196,14 @@ class _ProfileTabState extends State<ProfileTab> {
                 mainActionButtonText: 'Tamam')
             .show(context);
       }
-    } else {
-      AlertDialogPlatformSensetive(
-              title: 'Hata',
-              content:
-                  'Lütfen mevcut kullanıcı adınızdan başka bir kullanıcı adı giriniz ya da vazgeçiniz.',
-              mainActionButtonText: 'Tamam')
-          .show(context);
+    }
+  }
+
+  void _updateProfilePhoto(BuildContext context) async {
+    final _userModel = Provider.of<UserModel>(context, listen: false);
+    if(_profilePhoto != null){
+      var url = await _userModel.uploadFile(_userModel.user.userID, 'user_profile_photo',_profilePhoto);
+      print('Gelen URL: ' + url);
     }
   }
 }
