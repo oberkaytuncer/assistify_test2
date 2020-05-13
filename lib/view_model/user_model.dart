@@ -33,7 +33,7 @@ class UserModel with ChangeNotifier implements AuthBase {
       _user = await _userRepository.currentUser();
       return _user;
     } catch (e) {
-      debugPrint('Hata: user_model -> currentUser' + e.toString());
+      debugPrint('Hata: user_model -> currentUser ' + e.toString());
       return null;
     } finally {
       state = ViewState.Idle;
@@ -150,5 +150,15 @@ class UserModel with ChangeNotifier implements AuthBase {
     }
 
     return result;
+  }
+
+  Future<bool> updateUserName(String userID, String newUserName) async {
+   
+    var result = await _userRepository.updateUserName(userID, newUserName);
+    if(result){
+       _user.userName = newUserName;
+    } 
+  
+     return result;
   }
 }

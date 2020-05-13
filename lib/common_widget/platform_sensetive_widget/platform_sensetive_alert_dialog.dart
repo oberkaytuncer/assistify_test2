@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_messaging_app/common_widget/platform_sensetive_widget/platform_sensitive_widget.dart';
@@ -53,7 +52,8 @@ class AlertDialogPlatformSensetive extends PlatformSensetiveWidget {
           CupertinoDialogAction(
             child: Text(cancelActionButtonText),
             onPressed: () {
-              Navigator.of(context).pop(false); //bu kısımlar aşırı önemli çünkü geriye false bir değer burada döndürüyor. İsterse burda başka bir değer yazrak başka işlemler de yapabiliriz.
+              Navigator.of(context).pop(
+                  false); //bu kısımlar aşırı önemli çünkü geriye false bir değer burada döndürüyor. İsterse burda başka bir değer yazrak başka işlemler de yapabiliriz.
             },
           ),
         );
@@ -62,7 +62,8 @@ class AlertDialogPlatformSensetive extends PlatformSensetiveWidget {
         CupertinoDialogAction(
           child: Text(mainActionButtonText),
           onPressed: () {
-            Navigator.of(context).pop(true);//bu kısımlar aşırı önemli çünkü geriye false bir değer burada döndürüyor. İsterse burda başka bir değer yazrak başka işlemler de yapabiliriz.
+            Navigator.of(context).pop(
+                true); //bu kısımlar aşırı önemli çünkü geriye false bir değer burada döndürüyor. İsterse burda başka bir değer yazrak başka işlemler de yapabiliriz.
           },
         ),
       );
@@ -72,7 +73,8 @@ class AlertDialogPlatformSensetive extends PlatformSensetiveWidget {
           FlatButton(
             child: Text(cancelActionButtonText),
             onPressed: () {
-              Navigator.of(context).pop(false);//bu kısımlar aşırı önemli çünkü geriye false bir değer burada döndürüyor. İsterse burda başka bir değer yazrak başka işlemler de yapabiliriz.
+              Navigator.of(context).pop(
+                  false); //bu kısımlar aşırı önemli çünkü geriye false bir değer burada döndürüyor. İsterse burda başka bir değer yazrak başka işlemler de yapabiliriz.
             },
           ),
         );
@@ -81,7 +83,8 @@ class AlertDialogPlatformSensetive extends PlatformSensetiveWidget {
         FlatButton(
           child: Text(mainActionButtonText),
           onPressed: () {
-            Navigator.of(context).pop(true);//bu kısımlar aşırı önemli çünkü geriye false bir değer burada döndürüyor. İsterse burda başka bir değer yazrak başka işlemler de yapabiliriz.
+            Navigator.of(context).pop(
+                true); //bu kısımlar aşırı önemli çünkü geriye false bir değer burada döndürüyor. İsterse burda başka bir değer yazrak başka işlemler de yapabiliriz.
           },
         ),
       );
