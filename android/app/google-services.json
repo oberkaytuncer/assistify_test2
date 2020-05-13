@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1023058543630",
+    "firebase_url": "https://messageforfreedom.firebaseio.com",
+    "project_id": "messageforfreedom",
+    "storage_bucket": "messageforfreedom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023058543630:android:e912933a251b4775ec685f",
+        "android_client_info": {
+          "package_name": "com.example.flutter_messaging_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1023058543630-721ibj31u7b9id96ovcjq1gg9sehrmee.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_messaging_app",
+            "certificate_hash": "b83ecab1b02919ed5d935720031fbd5ccc2539f4"
+          }
+        },
+        {
+          "client_id": "1023058543630-u8lnrc1c030ejgpi9rl32i5f2532sq5d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWC40rmxLffyHRKx1rDVRujjOvhPpa8DI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1023058543630-u8lnrc1c030ejgpi9rl32i5f2532sq5d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
