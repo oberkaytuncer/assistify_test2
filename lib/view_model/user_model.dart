@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/locator.dart';
+import 'package:flutter_messaging_app/model/message.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/repository/user_repository.dart';
 import 'package:flutter_messaging_app/services/auth_base.dart';
@@ -167,6 +168,23 @@ class UserModel with ChangeNotifier implements AuthBase {
       String userID, String fileType, File willUploadFile) async {
     var url =
         await _userRepository.uploadFile(userID, fileType, willUploadFile);
+
     return url;
+  }
+
+  Future<List<User>> getAllUsers() async {
+    var allUsersList = await _userRepository.getAllUsers();
+    return allUsersList;
+  }
+
+  Stream<List<Message>> getMessages(
+      String currentUserID, String oppositeUserID) {
+    var result = _userRepository.getMessages(currentUserID, oppositeUserID);
+    return result;
+  }
+
+  Future<bool> saveMessage(Message willSaveMessage) {
+    var willSaveResult = _userRepository.saveMessage(willSaveMessage);
+    return willSaveResult;
   }
 }

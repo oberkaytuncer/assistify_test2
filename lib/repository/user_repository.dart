@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter_messaging_app/locator.dart';
+import 'package:flutter_messaging_app/model/message.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/services/auth_base.dart';
 import 'package:flutter_messaging_app/services/fake_auth_service.dart';
@@ -14,8 +15,8 @@ class UserRepository implements AuthBase {
   FakeAuthenticationService _fakeAuthenticationService =
       locator<FakeAuthenticationService>();
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
-  FirebaseStorageService _firebaseStorageService = locator<FirebaseStorageService>();
-
+  FirebaseStorageService _firebaseStorageService =
+      locator<FirebaseStorageService>();
 
   AppMode appMode = AppMode.RELEASE;
 
@@ -135,17 +136,46 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Future<String> uploadFile(String userID, String fileType, File willUploadFile) async {
+  Future<String> uploadFile(
+      String userID, String fileType, File willUploadFile) async {
     if (appMode == AppMode.DEBUG) {
       return 'file_download_URL';
     } else {
-  
-      String profilePhotoURL =
-          await _firebaseStorageService.uploadFile(userID, fileType, willUploadFile);
+      String profilePhotoURL = await _firebaseStorageService.uploadFile(
+          userID, fileType, willUploadFile);
 
-        await _firestoreDBService.updateProfilePhoto(userID, profilePhotoURL);
+      await _firestoreDBService.updateProfilePhoto(userID, profilePhotoURL);
 
       return profilePhotoURL;
+    }
+  }
+
+  Future<List<User>> getAllUsers() async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      List allUsersList = await _firestoreDBService.getAllUsers();
+      return allUsersList;
+    }
+  }
+
+  Stream<List<Message>> getMessages(
+      String currentUserID, String oppositeUserID) {
+    if (appMode == AppMode.DEBUG) {
+      return Stream.empty();
+    } else {
+      var result =
+          _firestoreDBService.getMessages(currentUserID, oppositeUserID);
+      return result;
+    }
+  }
+
+  Future<bool> saveMessage(Message willSaveMessage) async {
+    if (appMode == AppMode.DEBUG) {
+      return true;
+    } else {
+      var willSaveResult = _firestoreDBService.saveMessage(willSaveMessage);
+      return willSaveResult;
     }
   }
 }

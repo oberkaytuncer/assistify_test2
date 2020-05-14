@@ -20,10 +20,11 @@ class User {
   String cv;
   String languagePreference;
   String membershipPackage;
+  bool active;
 
   @override
   String toString() {
-    return 'User{userID: $userID, email: $email, userName: $userName, profilePhotoURL: $profilePhotoURL, createdAt: $createdAt, updatedAt: $updatedAt, level: $level, activeClient: $activeClient, totalLesson: $totalLesson, gsmNumber: $gsmNumber, tall: $tall, weight: $weight, website: $website, cv: $cv, languagePreference: $languagePreference, membershipPackage: $membershipPackage } ';
+    return 'User{userID: $userID, email: $email, userName: $userName, profilePhotoURL: $profilePhotoURL, createdAt: $createdAt, updatedAt: $updatedAt, level: $level, activeClient: $activeClient, totalLesson: $totalLesson, gsmNumber: $gsmNumber, tall: $tall, weight: $weight, website: $website, cv: $cv, languagePreference: $languagePreference, membershipPackage: $membershipPackage, active: $active } ';
   }
 
   User({@required this.userID, @required this.email});
@@ -50,6 +51,7 @@ class User {
       'cv': cv ?? '',
       'languagePreference': languagePreference ?? 'Türkçe',
       'membershipPackage': membershipPackage ?? 'Aylık',
+      'active': active ?? true,
     };
   }
 
@@ -69,7 +71,8 @@ class User {
         website = map['website'],
         cv = map['cv'],
         languagePreference = map['languagePreference'],
-        membershipPackage = map['membershipPackage']
+        membershipPackage = map['membershipPackage'],
+        active = map['active']
         ;
 
   String generateRandomNumber() {

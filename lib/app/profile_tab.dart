@@ -110,7 +110,8 @@ class _ProfileTabState extends State<ProfileTab> {
                         width: 100,
                         child: _profilePhoto == null
                             ? Image(
-                                image: NetworkImage(_userModel.user.profilePhotoURL),
+                                image: NetworkImage(
+                                    _userModel.user.profilePhotoURL),
                               )
                             : Image.file(_profilePhoto),
                       ),
@@ -201,9 +202,18 @@ class _ProfileTabState extends State<ProfileTab> {
 
   void _updateProfilePhoto(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
-    if(_profilePhoto != null){
-      var url = await _userModel.uploadFile(_userModel.user.userID, 'user_profile_photo',_profilePhoto);
+    if (_profilePhoto != null) {
+      var url = await _userModel.uploadFile(
+          _userModel.user.userID, 'user_profile_photo', _profilePhoto);
       print('Gelen URL: ' + url);
+
+      if (url != null) {
+        AlertDialogPlatformSensetive(
+                title: 'Başarılı',
+                content: 'İşlem Başarılı bir şekilde gerçekleşti ',
+                mainActionButtonText: 'Tamam')
+            .show(context);
+      }
     }
   }
 }
