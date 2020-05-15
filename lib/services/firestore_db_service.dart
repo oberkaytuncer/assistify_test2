@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/services/database_base.dart';
@@ -83,6 +84,26 @@ class FirestoreDBService implements DBBase {
   }
 
   @override
+  Future<List<Conversation>> getAllConversations(String userID) async {
+    QuerySnapshot querySnapshot = await _firebaseDB
+        .collection('chats')
+        .where('chat_owner', isEqualTo: userID)
+        .orderBy('created_date_message', descending: true)
+        .getDocuments();
+
+    List<Conversation> allConversation = [];
+
+    for (DocumentSnapshot oneConversation in querySnapshot.documents) {
+      Conversation _oneConversation =
+          Conversation.fromMap(oneConversation.data);
+
+      allConversation.add(_oneConversation);
+    }
+
+    return allConversation;
+  }
+
+  @override
   Stream<List<Message>> getMessages(
       String currentUserID, String oppositeUserID) {
     var snapShot = _firebaseDB
@@ -102,7 +123,7 @@ class FirestoreDBService implements DBBase {
     var _messageID = _firebaseDB.collection('chats').document().documentID;
     var _myDocumentID =
         willSaveMessage.messageFrom + '--' + willSaveMessage.messageTo;
-    var receiverDocumentID =
+    var _receiverDocumentID =
         willSaveMessage.messageTo + '--' + willSaveMessage.messageFrom;
 
     var _willSaveMessageMap = willSaveMessage.toMap();
@@ -114,14 +135,33 @@ class FirestoreDBService implements DBBase {
         .document(_messageID)
         .setData(_willSaveMessageMap);
 
+    await _firebaseDB.collection('chats').document(_myDocumentID).setData({
+      'chat_owner': willSaveMessage.messageFrom,
+      'chat_guest': willSaveMessage.messageTo,
+      'last_sent_message': willSaveMessage.messageContent,
+      'seen_message': false,
+      'created_date_message': FieldValue.serverTimestamp(),
+    });
+
     _willSaveMessageMap.update('isItFromMe', (value) => false);
 
     await _firebaseDB
         .collection('chats')
-        .document(receiverDocumentID)
+        .document(_receiverDocumentID)
         .collection('messages')
         .document(_messageID)
         .setData(_willSaveMessageMap);
+
+    await _firebaseDB
+        .collection('chats')
+        .document(_receiverDocumentID)
+        .setData({
+      'chat_owner': willSaveMessage.messageTo,
+      'chat_guest': willSaveMessage.messageFrom,
+      'last_sent_message': willSaveMessage.messageContent,
+      'seen_message': false,
+      'created_date_message': FieldValue.serverTimestamp(),
+    });
 
     return true;
   }

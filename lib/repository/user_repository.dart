@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter_messaging_app/locator.dart';
+import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/services/auth_base.dart';
@@ -19,6 +20,8 @@ class UserRepository implements AuthBase {
       locator<FirebaseStorageService>();
 
   AppMode appMode = AppMode.RELEASE;
+
+  List<User> allUsersList = [];
 
   @override
   Future<User> currentUser() async {
@@ -154,7 +157,7 @@ class UserRepository implements AuthBase {
     if (appMode == AppMode.DEBUG) {
       return [];
     } else {
-      List allUsersList = await _firestoreDBService.getAllUsers();
+      allUsersList = await _firestoreDBService.getAllUsers();
       return allUsersList;
     }
   }
@@ -174,8 +177,49 @@ class UserRepository implements AuthBase {
     if (appMode == AppMode.DEBUG) {
       return true;
     } else {
-      var willSaveResult = _firestoreDBService.saveMessage(willSaveMessage);
+      var willSaveResult =
+          await _firestoreDBService.saveMessage(willSaveMessage);
       return willSaveResult;
     }
+  }
+
+  Future<List<Conversation>> getAllConversations(userID) async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      var conversationList =
+          await _firestoreDBService.getAllConversations(userID);
+
+      for (var currentConversation in conversationList) {
+        var userInUserList = findUserInList(currentConversation.chat_guest);
+
+        if (userInUserList != null) {
+          print('VERİLER LOCAL CACHE DEN GETİRİLDİ..');
+          currentConversation.guestUserName = userInUserList.userName;
+          currentConversation.guestUserProfilePhotoURL =
+              userInUserList.profilePhotoURL;
+        } else {
+          print('VERİLER VERİ TABANIN DAN GETİRİLDİ..');
+          print(
+              'aranılan user daha önceden veri tabanındna getirlmemiştri. O yüzden veritabanından bu değeri okumalıyız.');
+
+          var readedUserFromDatabase = await _firestoreDBService
+              .readUser(currentConversation.chat_guest);
+          currentConversation.guestUserName = readedUserFromDatabase.userName;
+          currentConversation.guestUserProfilePhotoURL =
+              readedUserFromDatabase.profilePhotoURL;
+        }
+      }
+      return conversationList;
+    }
+  }
+
+  User findUserInList(userID) {
+    for (int i = 0; i < allUsersList.length; i++) {
+      if (allUsersList[i].userID == userID) {
+        return allUsersList[i];
+      }
+    }
+    return null;
   }
 }

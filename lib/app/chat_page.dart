@@ -6,17 +6,17 @@ import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class Chat extends StatefulWidget {
+class ChatPage extends StatefulWidget {
   final User currentUser;
   final User oppositeUser;
 
-  Chat({@required this.currentUser, @required this.oppositeUser});
+  ChatPage({@required this.currentUser, @required this.oppositeUser});
 
   @override
-  _ChatState createState() => _ChatState();
+  _ChatPageState createState() => _ChatPageState();
 }
 
-class _ChatState extends State<Chat> {
+class _ChatPageState extends State<ChatPage> {
   var _messageController = TextEditingController();
   ScrollController _scrollController = ScrollController();
 

@@ -55,6 +55,9 @@ class User {
     };
   }
 
+  User.idAndProfilePhotoURL(
+      {@required this.userID, @required this.profilePhotoURL});
+
   User.fromMap(Map<String, dynamic> map)
       : userID = map['userID'],
         email = map['email'],
@@ -72,8 +75,7 @@ class User {
         cv = map['cv'],
         languagePreference = map['languagePreference'],
         membershipPackage = map['membershipPackage'],
-        active = map['active']
-        ;
+        active = map['active'];
 
   String generateRandomNumber() {
     int randomNumber = Random().nextInt(9999999);

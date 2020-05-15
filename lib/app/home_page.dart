@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_messaging_app/app/my_conversation_tab.dart';
 import 'package:flutter_messaging_app/app/my_custom_bottom_navi.dart';
 import 'package:flutter_messaging_app/app/profile_tab.dart';
 import 'package:flutter_messaging_app/app/tab_items.dart';
@@ -21,12 +22,14 @@ class _HomePageState extends State<HomePage> {
 
   Map<TabItem, GlobalKey<NavigatorState>> navigatorsKeys = {
     TabItem.Users: GlobalKey<NavigatorState>(),
+    TabItem.MyChat: GlobalKey<NavigatorState>(),
     TabItem.Profile: GlobalKey<NavigatorState>(),
   }; //Burasını normalde MyCustomBottomNAvi sınıfında da yabilirdim ama sayfaların keylerini homepage'de tutmak daha mantıklı. 244.ders
 
   Map<TabItem, Widget> allTabs() {
     return {
       TabItem.Users: UsersTab(),
+      TabItem.MyChat: MyConversationTab(),
       TabItem.Profile: ProfileTab(),
     };
   } //Bu Map gerekli yönlendirmeleri yapacak yolları gösteriyor.

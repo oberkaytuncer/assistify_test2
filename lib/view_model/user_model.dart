@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/locator.dart';
+import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/repository/user_repository.dart';
@@ -183,8 +184,13 @@ class UserModel with ChangeNotifier implements AuthBase {
     return result;
   }
 
-  Future<bool> saveMessage(Message willSaveMessage) {
-    var willSaveResult = _userRepository.saveMessage(willSaveMessage);
+  Future<bool> saveMessage(Message willSaveMessage)async  {
+    var willSaveResult = await _userRepository.saveMessage(willSaveMessage);
     return willSaveResult;
+  }
+
+  Future<List<Conversation>> getAllConversations(userID)async  {
+    var result = await _userRepository.getAllConversations(userID);
+    return result;
   }
 }
