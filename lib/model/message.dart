@@ -5,7 +5,7 @@ class Message {
   final String messageTo;
   final bool isItFromMe;
   final String messageContent;
-  final DateTime messageDate;
+  final Timestamp messageDate;
 
   Message({
     this.messageFrom,
@@ -30,7 +30,7 @@ class Message {
         messageTo = map['messageTo'],
         isItFromMe = map['isItFromMe'],
         messageContent = map['messageContent'],
-        messageDate = (map['messageDate'] as Timestamp).toDate();
+        messageDate = map['messageDate'];
 
   @override
   String toString() {

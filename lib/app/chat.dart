@@ -1,7 +1,9 @@
+import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/model/message.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Chat extends StatefulWidget {
@@ -16,6 +18,7 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> {
   var _messageController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +44,11 @@ class _ChatState extends State<Chat> {
                     } else {
                       List<Message> allMessages = streamMessageList.data;
                       return ListView.builder(
+                        reverse: true,
+                        controller: _scrollController,
                         itemCount: allMessages.length,
                         itemBuilder: (context, index) {
-                          return Text(allMessages[index].messageContent);
+                          return _createChatBubble(allMessages[index]);
                         },
                       );
                     }
@@ -97,6 +102,9 @@ class _ChatState extends State<Chat> {
 
                           if (result) {
                             _messageController.clear();
+                            _scrollController.animateTo(0.0,
+                                duration: const Duration(milliseconds: 10),
+                                curve: Curves.easeOut);
                           }
                         }
                       },
@@ -109,5 +117,85 @@ class _ChatState extends State<Chat> {
         ),
       ),
     );
+  }
+
+  Widget _createChatBubble(Message currentMessage) {
+    Color _receivedMessageColor = Colors.purple;
+    Color _sentMessageColor = Theme.of(context).primaryColor;
+    String _valueHourMinute = '';
+
+    try {
+      _valueHourMinute = _showHourMinute(currentMessage.messageDate ?? Timestamp(1,1));
+    } catch (e) {
+      print('Hata var ' + e.toString());
+    }
+
+    bool _isItMyMessage = currentMessage.isItFromMe;
+
+    if (_isItMyMessage) {
+      return Padding(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Flexible(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: _sentMessageColor,
+                    ),
+                    padding: EdgeInsets.all(12),
+                    margin: EdgeInsets.all(4),
+                    child: Text(
+                      currentMessage.messageContent,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                Text(_valueHourMinute),
+              ],
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundImage:
+                      NetworkImage(widget.oppositeUser.profilePhotoURL),
+                ),
+                Flexible(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: _receivedMessageColor,
+                    ),
+                    padding: EdgeInsets.all(12),
+                    margin: EdgeInsets.all(6),
+                    child: Text(currentMessage.messageContent),
+                  ),
+                ),
+                Text(_valueHourMinute),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  String _showHourMinute(Timestamp messageDate) {
+    var _formatter = DateFormat.Hm();
+    var _formattedTime = _formatter.format(messageDate.toDate());
+    return _formattedTime;
   }
 }
