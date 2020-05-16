@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/app/chat_page.dart';
 import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/user.dart';
+import 'package:flutter_messaging_app/view_model/chat_view_model.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
 
@@ -40,19 +41,25 @@ class _MyConversationTabState extends State<MyConversationTab> {
                         onTap: () {
                           Navigator.of(context, rootNavigator: true).push(
                             MaterialPageRoute(
-                              builder: (context) => ChatPage(
-                                currentUser: _userModel.user,
-                                oppositeUser: User.idAndProfilePhotoURL(
-                                    userID: currentConversation.chat_guest,
-                                    profilePhotoURL: currentConversation
-                                        .guestUserProfilePhotoURL),
+                              builder: (context) =>
+                                  ChangeNotifierProvider<ChatViewModel>(
+                                create: (context) => ChatViewModel(
+                                  currentUser: _userModel.user,
+                                  oppositeUser: User.idAndProfilePhotoURL(
+                                      userID: currentConversation.chat_guest,
+                                      profilePhotoURL: currentConversation
+                                          .guestUserProfilePhotoURL),
+                                ),
+                                child: ChatPage(),
                               ),
                             ),
                           );
                         },
                         child: ListTile(
                           title: Text(currentConversation.last_sent_message),
-                          subtitle: Text(currentConversation.guestUserName + '    ' + currentConversation.timeDifference),
+                          subtitle: Text(currentConversation.guestUserName +
+                              '    ' +
+                              currentConversation.timeDifference),
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(
                                 currentConversation.guestUserProfilePhotoURL),

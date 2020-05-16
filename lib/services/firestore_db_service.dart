@@ -91,6 +91,7 @@ class FirestoreDBService implements DBBase {
         .document(currentUserID + '--' + oppositeUserID)
         .collection('messages')
         .orderBy('messageDate', descending: true)
+        .limit(1)
         .snapshots();
 
     var result = snapShot.map((messageList) => messageList.documents
@@ -186,5 +187,41 @@ class FirestoreDBService implements DBBase {
     }
 
     return _allUsers;
+  }
+
+  Future<List<Message>> getMessageWithPagination(
+      String currentUserID,
+      String oppositeUserID,
+      Message lastGottenMessage,
+      int postsPerPage) async {
+    QuerySnapshot _querySnapshot;
+    List<Message> _allMessages = [];
+
+    if (lastGottenMessage == null) {
+      _querySnapshot = await Firestore.instance
+          .collection('chats')
+          .document(currentUserID + '--' + oppositeUserID)
+          .collection('messages')
+          .orderBy('messageDate', descending: true)
+          .limit(postsPerPage)
+          .getDocuments();
+    } else {
+      _querySnapshot = await Firestore.instance
+          .collection('chats')
+          .document(currentUserID + '--' + oppositeUserID)
+          .collection('messages')
+          .orderBy('messageDate', descending: true)
+          .startAfter([lastGottenMessage.messageDate])
+          .limit(postsPerPage)
+          .getDocuments();
+      await Future.delayed(Duration(milliseconds: 300));
+    }
+
+    for (DocumentSnapshot snap in _querySnapshot.documents) {
+      Message _oneMessage = Message.fromMap(snap.data);
+      _allMessages.add(_oneMessage);
+    }
+
+    return _allMessages;
   }
 }

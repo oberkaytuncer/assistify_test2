@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/app/chat_page.dart';
 import 'package:flutter_messaging_app/view_model/all_users_view_model.dart';
+import 'package:flutter_messaging_app/view_model/chat_view_model.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +26,6 @@ class _UsersTabState extends State<UsersTab> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         title: Text('asfdsf'),
@@ -39,14 +39,13 @@ class _UsersTabState extends State<UsersTab> {
           } else if (model.state == AllUserViewState.Loaded) {
             return RefreshIndicator(
               onRefresh: model.refresh,
-                          child: ListView.builder(
+              child: ListView.builder(
                 controller: _scrollController,
                 itemCount: model.hasMoreLoading
                     ? model.usersList.length + 1
                     : model.usersList.length,
                 itemBuilder: (context, index) {
-
-                  if(model.usersList.length ==1 ){
+                  if (model.usersList.length == 1) {
                     return _noUserUI();
                   }
                   if (model.hasMoreLoading && index == model.usersList.length) {
@@ -63,36 +62,36 @@ class _UsersTabState extends State<UsersTab> {
     );
   }
 
-
-Widget _noUserUI(){
-   final _allUserViewModel = Provider.of<AllUsersViewModel>(context, listen: false);
-          return RefreshIndicator(
-            onRefresh: _allUserViewModel.refresh,
-            child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              child: Container(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.supervised_user_circle,
-                        color: Theme.of(context).primaryColor,
-                        size: 120,
-                      ),
-                      Text(
-                        'Henüz bir kullanıcı yok',
-                        style: TextStyle(fontSize: 36),
-                      ),
-                    ],
-                  ),
+  Widget _noUserUI() {
+    final _allUserViewModel =
+        Provider.of<AllUsersViewModel>(context, listen: false);
+    return RefreshIndicator(
+      onRefresh: _allUserViewModel.refresh,
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Container(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.supervised_user_circle,
+                  color: Theme.of(context).primaryColor,
+                  size: 120,
                 ),
-              ),
+                Text(
+                  'Henüz bir kullanıcı yok',
+                  style: TextStyle(fontSize: 36),
+                ),
+              ],
             ),
-          );
-}
-    
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _createUserListChild(int index) {
     final _userModel = Provider.of<UserModel>(context, listen: false);
     final _allUserViewModel =
@@ -100,27 +99,31 @@ Widget _noUserUI(){
     var _currentUser = _allUserViewModel.usersList[index];
     if (_currentUser.userID == _userModel.user.userID) {
       return Container();
-    }
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context, rootNavigator: true).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) => ChatPage(
-                currentUser: _userModel.user, oppositeUser: _currentUser),
-          ),
-        );
-      },
-      child: Card(
-        child: ListTile(
-          title: Text(_currentUser.userName),
-          subtitle: Text(_currentUser.email),
-          leading: CircleAvatar(
-            backgroundImage: NetworkImage(_currentUser.profilePhotoURL),
+    } else {
+      return GestureDetector(
+        onTap: () {
+          Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  ChangeNotifierProvider<ChatViewModel>(
+                create: (context) => ChatViewModel(
+                    currentUser: _userModel.user, oppositeUser: _currentUser),
+                child: ChatPage(),
+              ),
+            ),
+          );
+        },
+        child: Card(
+          child: ListTile(
+            title: Text(_currentUser.userName),
+            subtitle: Text(_currentUser.email),
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(_currentUser.profilePhotoURL),
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   _newUsersisLoadingIndicator() {
@@ -146,9 +149,8 @@ Widget _noUserUI(){
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-          print('Listenin en altındayız.');
+      print('Listenin en altındayız.');
       getMoreUser();
     }
-
   }
 }
