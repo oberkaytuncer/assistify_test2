@@ -8,6 +8,7 @@ import 'package:flutter_messaging_app/services/fake_auth_service.dart';
 import 'package:flutter_messaging_app/services/firebase_auth_service.dart';
 import 'package:flutter_messaging_app/services/firebase_storage_service.dart';
 import 'package:flutter_messaging_app/services/firestore_db_service.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 enum AppMode { DEBUG, RELEASE }
 
@@ -187,6 +188,8 @@ class UserRepository implements AuthBase {
     if (appMode == AppMode.DEBUG) {
       return [];
     } else {
+      DateTime _time = await _firestoreDBService.showTime(userID);
+
       var conversationList =
           await _firestoreDBService.getAllConversations(userID);
 
@@ -209,6 +212,8 @@ class UserRepository implements AuthBase {
           currentConversation.guestUserProfilePhotoURL =
               readedUserFromDatabase.profilePhotoURL;
         }
+
+        calculateTimeago(currentConversation, _time);
       }
       return conversationList;
     }
@@ -221,5 +226,15 @@ class UserRepository implements AuthBase {
       }
     }
     return null;
+  }
+
+  void calculateTimeago(Conversation currentConversation, DateTime time) {
+    currentConversation.lastReadTime = time;
+
+    timeago.setLocaleMessages('tr', timeago.TrMessages());
+    var _duration =
+        time.difference(currentConversation.created_date_message.toDate());
+    currentConversation.timeDifference =
+        timeago.format(time.subtract(_duration), locale: 'tr');
   }
 }

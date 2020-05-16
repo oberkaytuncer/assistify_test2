@@ -165,4 +165,16 @@ class FirestoreDBService implements DBBase {
 
     return true;
   }
+
+  @override
+  Future<DateTime> showTime(String userID) async {
+    await _firebaseDB.collection('server').document(userID).setData({
+      'time': FieldValue.serverTimestamp(),
+    });
+    var readedMap =
+        await _firebaseDB.collection('server').document(userID).get();
+
+    Timestamp readedTime = readedMap.data['time'];
+    return readedTime.toDate();
+  }
 }

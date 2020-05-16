@@ -52,7 +52,7 @@ class _MyConversationTabState extends State<MyConversationTab> {
                         },
                         child: ListTile(
                           title: Text(currentConversation.last_sent_message),
-                          subtitle: Text(currentConversation.guestUserName),
+                          subtitle: Text(currentConversation.guestUserName + '    ' + currentConversation.timeDifference),
                           leading: CircleAvatar(
                             backgroundImage: NetworkImage(
                                 currentConversation.guestUserProfilePhotoURL),

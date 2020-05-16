@@ -12,4 +12,5 @@ abstract class DBBase {
   Stream<List<Message>> getMessages(
       String currentUserID, String oppositeUserID);
   Future<bool> saveMessage(Message willSaveMessage);
+  Future<DateTime> showTime(String userID);
 }

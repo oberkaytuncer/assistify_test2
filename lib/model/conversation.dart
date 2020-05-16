@@ -9,6 +9,8 @@ class Conversation {
   final Timestamp seen_date_message;
   String guestUserName;
   String guestUserProfilePhotoURL;
+  DateTime lastReadTime;
+  String timeDifference;
 
   Conversation({
     this.chat_guest,
