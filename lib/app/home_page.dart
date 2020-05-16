@@ -5,6 +5,7 @@ import 'package:flutter_messaging_app/app/profile_tab.dart';
 import 'package:flutter_messaging_app/app/tab_items.dart';
 import 'package:flutter_messaging_app/app/users_tab.dart';
 import 'package:flutter_messaging_app/model/user.dart';
+import 'package:flutter_messaging_app/view_model/all_users_view_model.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,10 @@ class _HomePageState extends State<HomePage> {
 
   Map<TabItem, Widget> allTabs() {
     return {
-      TabItem.Users: UsersTab(),
+      TabItem.Users: ChangeNotifierProvider(
+        create: (context) => AllUsersViewModel(),
+        child: UsersTab(),
+      ) ,
       TabItem.MyChat: MyConversationTab(),
       TabItem.Profile: ProfileTab(),
     };

@@ -7,7 +7,8 @@ abstract class DBBase {
   Future<User> readUser(String userID);
   Future<bool> updateUserName(String userID, String newUserName);
   Future<bool> updateProfilePhoto(String userID, String profilePhotoURL);
-  Future<List<User>> getAllUsers();
+ 
+  Future<List<User>> getUserWithPagination(User lastGottenUser, int amountOfUserToGet);
   Future<List<Conversation>> getAllConversations(String userID);
   Stream<List<Message>> getMessages(
       String currentUserID, String oppositeUserID);

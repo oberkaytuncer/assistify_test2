@@ -154,14 +154,7 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Future<List<User>> getAllUsers() async {
-    if (appMode == AppMode.DEBUG) {
-      return [];
-    } else {
-      allUsersList = await _firestoreDBService.getAllUsers();
-      return allUsersList;
-    }
-  }
+ 
 
   Stream<List<Message>> getMessages(
       String currentUserID, String oppositeUserID) {
@@ -236,5 +229,23 @@ class UserRepository implements AuthBase {
         time.difference(currentConversation.created_date_message.toDate());
     currentConversation.timeDifference =
         timeago.format(time.subtract(_duration), locale: 'tr');
+  }
+
+
+
+
+
+
+  Future<List<User>> getUserWithPagination(
+      User lastGottenUser, int postsPerPage) async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+
+      List<User> _userList = await _firestoreDBService.getUserWithPagination(
+          lastGottenUser, postsPerPage);
+     allUsersList.addAll(_userList);
+      return _userList;
+    }
   }
 }

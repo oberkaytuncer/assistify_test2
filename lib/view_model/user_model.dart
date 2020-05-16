@@ -173,10 +173,7 @@ class UserModel with ChangeNotifier implements AuthBase {
     return url;
   }
 
-  Future<List<User>> getAllUsers() async {
-    var allUsersList = await _userRepository.getAllUsers();
-    return allUsersList;
-  }
+ 
 
   Stream<List<Message>> getMessages(
       String currentUserID, String oppositeUserID) {
@@ -184,13 +181,20 @@ class UserModel with ChangeNotifier implements AuthBase {
     return result;
   }
 
-  Future<bool> saveMessage(Message willSaveMessage)async  {
+  Future<bool> saveMessage(Message willSaveMessage) async {
     var willSaveResult = await _userRepository.saveMessage(willSaveMessage);
     return willSaveResult;
   }
 
-  Future<List<Conversation>> getAllConversations(userID)async  {
+  Future<List<Conversation>> getAllConversations(userID) async {
     var result = await _userRepository.getAllConversations(userID);
+    return result;
+  }
+
+  Future<List<User>> getUserWithPagination(
+      User lastGottenUser, int amountOfUserToGet) async {
+    var result = await _userRepository.getUserWithPagination(
+        lastGottenUser, amountOfUserToGet);
     return result;
   }
 }

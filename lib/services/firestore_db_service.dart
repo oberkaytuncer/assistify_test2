@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
 import 'package:flutter_messaging_app/model/user.dart';
@@ -62,25 +61,6 @@ class FirestoreDBService implements DBBase {
         .document(userID)
         .updateData({'profilePhotoURL': profilePhotoURL});
     return true;
-  }
-
-  @override
-  Future<List<User>> getAllUsers() async {
-    QuerySnapshot querySnapshot =
-        await _firebaseDB.collection('users').getDocuments();
-
-    List<User> allUsers = [];
-
-    for (DocumentSnapshot oneUser in querySnapshot.documents) {
-      User _oneUser = User.fromMap(oneUser.data);
-      allUsers.add(_oneUser);
-    }
-
-/*Aynı işlemi MAP methodu ile daha kolay bir şekilde yapabiliriz.
-   allUsers = querySnapshot.documents.map((theOne) => User.fromMap(theOne.data)).toList(); 
- */
-    debugPrint(' *******' + allUsers.toString() + '\n');
-    return allUsers;
   }
 
   @override
@@ -176,5 +156,35 @@ class FirestoreDBService implements DBBase {
 
     Timestamp readedTime = readedMap.data['time'];
     return readedTime.toDate();
+  }
+
+  @override
+  Future<List<User>> getUserWithPagination(
+      User lastGottenUser, int postsPerPage) async {
+    QuerySnapshot _querySnapshot;
+    List<User> _allUsers = [];
+
+    if (lastGottenUser == null) {
+      _querySnapshot = await Firestore.instance
+          .collection('users')
+          .orderBy('userName')
+          .limit(postsPerPage)
+          .getDocuments();
+    } else {
+      _querySnapshot = await Firestore.instance
+          .collection('users')
+          .orderBy('userName')
+          .startAfter([lastGottenUser.userName])
+          .limit(postsPerPage)
+          .getDocuments();
+      await Future.delayed(Duration(milliseconds: 300));
+    }
+
+    for (DocumentSnapshot snap in _querySnapshot.documents) {
+      User _oneUser = User.fromMap(snap.data);
+      _allUsers.add(_oneUser);
+    }
+
+    return _allUsers;
   }
 }
