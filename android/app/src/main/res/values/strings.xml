@@ -3,5 +3,6 @@
     <string name="app_name">Messaging App</string>
     <string name="facebook_app_id">352439009049727</string>
     <string name="fb_login_protocol_scheme">fb352439009049727</string>
+    <string name="default_notification_channel_id">default</string>
 
 </resources>

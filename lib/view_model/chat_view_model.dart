@@ -9,20 +9,20 @@ import 'package:flutter_messaging_app/repository/user_repository.dart';
 enum ChatViewState { Idle, Loaded, Busy }
 
 class ChatViewModel with ChangeNotifier {
-  List<Message> _allMessages;
+  List<Messages> _allMessages;
   ChatViewState _state = ChatViewState.Idle;
   static final postsPerPage = 10;
   final User currentUser;
   final User oppositeUser;
-  Message _lastGottenMessage;
-  Message _firstAddedMessageInList;
+  Messages _lastGottenMessage;
+  Messages _firstAddedMessageInList;
   UserRepository _userRepository = locator<UserRepository>();
   bool _hasMore = true;
   bool _newMessageRealTimeListener = false;
   bool get hasMoreLoading => _hasMore;
   StreamSubscription _streamSubscription;
 
-  List<Message> get messagesList => _allMessages;
+  List<Messages> get messagesList => _allMessages;
 
   ChatViewState get state => _state;
 
@@ -43,8 +43,8 @@ class ChatViewModel with ChangeNotifier {
     getMessageWithPagination(false);
   }
 
-  Future<bool> saveMessage(Message willSaveMessage) async {
-    var willSaveResult = await _userRepository.saveMessage(willSaveMessage);
+  Future<bool> saveMessage(Messages willSaveMessage, User currentUser) async {
+    var willSaveResult = await _userRepository.saveMessage(willSaveMessage, currentUser);
     return willSaveResult;
   }
 

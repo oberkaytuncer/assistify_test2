@@ -1,10 +1,13 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/app/my_conversation_tab.dart';
 import 'package:flutter_messaging_app/app/my_custom_bottom_navi.dart';
 import 'package:flutter_messaging_app/app/profile_tab.dart';
 import 'package:flutter_messaging_app/app/tab_items.dart';
 import 'package:flutter_messaging_app/app/users_tab.dart';
+import 'package:flutter_messaging_app/common_widget/platform_sensetive_widget/platform_sensetive_alert_dialog.dart';
 import 'package:flutter_messaging_app/model/user.dart';
+import 'package:flutter_messaging_app/notification_handler.dart';
 import 'package:flutter_messaging_app/view_model/all_users_view_model.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +22,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   TabItem _currentTab = TabItem.Users;
 
   Map<TabItem, GlobalKey<NavigatorState>> navigatorsKeys = {
@@ -32,11 +37,19 @@ class _HomePageState extends State<HomePage> {
       TabItem.Users: ChangeNotifierProvider(
         create: (context) => AllUsersViewModel(),
         child: UsersTab(),
-      ) ,
+      ),
       TabItem.MyChat: MyConversationTab(),
       TabItem.Profile: ProfileTab(),
     };
   } //Bu Map gerekli yönlendirmeleri yapacak yolları gösteriyor.
+
+  @override
+  void initState() {
+    super.initState();
+   NotificationHandler().initializeFCMNotification(context);
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {

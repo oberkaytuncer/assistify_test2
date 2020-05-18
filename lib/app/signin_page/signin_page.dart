@@ -1,13 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_messaging_app/app/error_exception.dart';
 import 'package:flutter_messaging_app/common_widget/buttons/social_login_button.dart';
+import 'package:flutter_messaging_app/common_widget/platform_sensetive_widget/platform_sensetive_alert_dialog.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'email_and_pass_signin_signup.dart';
 
-class SignInPage extends StatelessWidget {
+
+PlatformException myError;
+
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
   void _demoUserSignIn(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
     User _user = await _userModel.signInAnonymously();
@@ -17,13 +29,21 @@ class SignInPage extends StatelessWidget {
   void _googleSignIn(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
     User _user = await _userModel.signInWithGoogle();
-   if (_user != null) print('Google ile oturum açan ID: ' + _user.userID);
+    if (_user != null) print('Google ile oturum açan ID: ' + _user.userID);
   }
 
   void _facebookSignIn(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
-    User _user = await _userModel.signInWithFacebook();
-   if (_user != null) print('facebook ile oturum açan ID: ' + _user.userID);
+
+    try {
+      User _user = await _userModel.signInWithFacebook();
+      if (_user != null)
+        print(
+            'Email ve şifre ile yeni kullanıcı yaratılan ID: ' + _user.userID);
+    } on PlatformException catch (e) {
+      myError = e;
+      
+    }
   }
 
   void _emailAndPassSignIn(BuildContext context) {
@@ -31,6 +51,22 @@ class SignInPage extends StatelessWidget {
         fullscreenDialog: false,
         builder: (context) => EmailAndPassSignInPage()));
   }
+
+
+
+@override
+void initState() { 
+  super.initState();
+  SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    if(myError != null)
+    AlertDialogPlatformSensetive(
+        title: 'Kullanıcı Oluşturma Hata',
+        content: Errors.showError(myError.code),
+        mainActionButtonText: 'Tamam',
+      ).show(context);
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {

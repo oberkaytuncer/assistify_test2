@@ -9,22 +9,20 @@ class FirestoreDBService implements DBBase {
 
   @override
   Future<bool> saveUser(User user) async {
-    await _firebaseDB
-        .collection('users')
-        .document(user.userID)
-        .setData(user.toMap()); //Burada user firestore database ekleniyor.
+    DocumentSnapshot _readedUser =
+        await Firestore.instance //Burada user firebase'den okunuyor.
+            .document('users/' + user.userID)
+            .get();
 
-    DocumentSnapshot _readedUser = await Firestore.instance
-        .document('users/' + user.userID)
-        .get(); //Burada user firebase'den okunuyor.
-
-    Map _readedUserInformationMap = _readedUser.data;
-
-    User _readedUserInformation = User.fromMap(_readedUserInformationMap);
-
-    print('Okunan User Nesnesi: ' + _readedUserInformation.toString());
-
-    return true;
+    if (_readedUser.data == null) {
+      await _firebaseDB
+          .collection('users')
+          .document(user.userID)
+          .setData(user.toMap()); //Burada user firestore database ekleniyor.
+      return true;
+    } else {
+      return true;
+    }
   }
 
   @override
@@ -84,7 +82,7 @@ class FirestoreDBService implements DBBase {
   }
 
   @override
-  Stream<List<Message>> getMessages(
+  Stream<List<Messages>> getMessages(
       String currentUserID, String oppositeUserID) {
     var snapShot = _firebaseDB
         .collection('chats')
@@ -95,12 +93,12 @@ class FirestoreDBService implements DBBase {
         .snapshots();
 
     var result = snapShot.map((messageList) => messageList.documents
-        .map((message) => Message.fromMap(message.data))
+        .map((message) => Messages.fromMap(message.data))
         .toList());
     return result;
   }
 
-  Future<bool> saveMessage(Message willSaveMessage) async {
+  Future<bool> saveMessage(Messages willSaveMessage) async {
     var _messageID = _firebaseDB.collection('chats').document().documentID;
     var _myDocumentID =
         willSaveMessage.messageFrom + '--' + willSaveMessage.messageTo;
@@ -189,13 +187,13 @@ class FirestoreDBService implements DBBase {
     return _allUsers;
   }
 
-  Future<List<Message>> getMessageWithPagination(
+  Future<List<Messages>> getMessageWithPagination(
       String currentUserID,
       String oppositeUserID,
-      Message lastGottenMessage,
+      Messages lastGottenMessage,
       int postsPerPage) async {
     QuerySnapshot _querySnapshot;
-    List<Message> _allMessages = [];
+    List<Messages> _allMessages = [];
 
     if (lastGottenMessage == null) {
       _querySnapshot = await Firestore.instance
@@ -218,10 +216,20 @@ class FirestoreDBService implements DBBase {
     }
 
     for (DocumentSnapshot snap in _querySnapshot.documents) {
-      Message _oneMessage = Message.fromMap(snap.data);
+      Messages _oneMessage = Messages.fromMap(snap.data);
       _allMessages.add(_oneMessage);
     }
 
     return _allMessages;
+  }
+
+  Future<String> getToken(String messageTo) async {
+    DocumentSnapshot _token =
+        await _firebaseDB.document('tokens/' + messageTo).get();
+    if (_token != null) 
+      return _token.data['token'];
+     else 
+      return null;
+    
   }
 }

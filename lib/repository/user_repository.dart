@@ -8,6 +8,7 @@ import 'package:flutter_messaging_app/services/fake_auth_service.dart';
 import 'package:flutter_messaging_app/services/firebase_auth_service.dart';
 import 'package:flutter_messaging_app/services/firebase_storage_service.dart';
 import 'package:flutter_messaging_app/services/firestore_db_service.dart';
+import 'package:flutter_messaging_app/services/notification_sending_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 enum AppMode { DEBUG, RELEASE }
@@ -19,10 +20,13 @@ class UserRepository implements AuthBase {
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
   FirebaseStorageService _firebaseStorageService =
       locator<FirebaseStorageService>();
+  NotificationSendingService _notificationSendingService =
+      locator<NotificationSendingService>();
 
   AppMode appMode = AppMode.RELEASE;
 
   List<User> allUsersList = [];
+  Map<String, String> userTokens = Map<String, String>();
 
   @override
   Future<User> currentUser() async {
@@ -31,10 +35,10 @@ class UserRepository implements AuthBase {
     } else {
       User _user = await _firebaseAuthService.currentUser();
 
-      User _readedUserFromFirestore =
-          await _firestoreDBService.readUser(_user.userID);
-
-      return _readedUserFromFirestore;
+      if (_user != null)
+        return await _firestoreDBService.readUser(_user.userID);
+      else
+        return null;
     }
   }
 
@@ -63,14 +67,17 @@ class UserRepository implements AuthBase {
     } else {
       User _user = await _firebaseAuthService.signInWithGoogle();
 
-      bool _result = await _firestoreDBService.saveUser(_user);
+      if (_user != null) {
+        bool _result = await _firestoreDBService.saveUser(_user);
 
-      if (_result == true) {
-        User _readedUserFromFirestore =
-            await _firestoreDBService.readUser(_user.userID);
-
-        return _readedUserFromFirestore;
-      }
+        if (_result) {
+          return await _firestoreDBService.readUser(_user.userID);
+        } else {
+          await _firebaseAuthService.signOut();
+          return null;
+        }
+      } else
+        return null;
     }
   }
 
@@ -81,14 +88,19 @@ class UserRepository implements AuthBase {
     } else {
       User _user = await _firebaseAuthService.signInWithFacebook();
 
-      bool _result = await _firestoreDBService.saveUser(_user);
+      if (_user != null) {
+        bool _result = await _firestoreDBService.saveUser(_user);
+        if (_result == true) {
+          User _readedUserFromFirestore =
+              await _firestoreDBService.readUser(_user.userID);
 
-      if (_result == true) {
-        User _readedUserFromFirestore =
-            await _firestoreDBService.readUser(_user.userID);
-
-        return _readedUserFromFirestore;
-      }
+          return _readedUserFromFirestore;
+        } else {
+          await _firebaseAuthService.signOut();
+          return null;
+        }
+      } else
+        return null;
     }
   }
 
@@ -154,7 +166,7 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Stream<List<Message>> getMessages(
+  Stream<List<Messages>> getMessages(
       String currentUserID, String oppositeUserID) {
     if (appMode == AppMode.DEBUG) {
       return Stream.empty();
@@ -165,13 +177,27 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Future<bool> saveMessage(Message willSaveMessage) async {
+  Future<bool> saveMessage(Messages willSaveMessage, User currentUser) async {
     if (appMode == AppMode.DEBUG) {
       return true;
     } else {
-      var willSaveResult =
-          await _firestoreDBService.saveMessage(willSaveMessage);
-      return willSaveResult;
+      var savingResult = await _firestoreDBService.saveMessage(willSaveMessage);
+      if (savingResult) {
+        var token = '';
+        if (userTokens.containsKey(willSaveMessage.messageTo)) {
+          token = userTokens[willSaveMessage.messageTo];
+          print('Localden geldi: ' + token);
+        } else {
+          token = await _firestoreDBService.getToken(willSaveMessage.messageTo);
+          if(token != null)
+          userTokens[willSaveMessage.messageTo] = token;
+          print('Veritabanından geldi: ' + token);
+        }
+        if(token !=null)
+        await _notificationSendingService.sendNotification(
+            willSaveMessage, currentUser, token);
+            return true;
+      }else return false;
     }
   }
 
@@ -241,10 +267,10 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Future<List<Message>> getMessageWithPagination(
+  Future<List<Messages>> getMessageWithPagination(
       String currentUserID,
       String oppositeUserID,
-      Message lastGottenMessage,
+      Messages lastGottenMessage,
       int postsPerPage) async {
     if (appMode == AppMode.DEBUG) {
       return [];

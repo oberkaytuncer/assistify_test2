@@ -35,7 +35,9 @@ class UserModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       _user = await _userRepository.currentUser();
+      if(_user != null)
       return _user;
+      else return null;
     } catch (e) {
       debugPrint('Hata: user_model -> currentUser ' + e.toString());
       return null;
@@ -80,7 +82,9 @@ class UserModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       _user = await _userRepository.signInWithGoogle();
+      if(_user!= null)
       return _user;
+      else return null;
     } catch (e) {
       debugPrint('Hata: user_model -> signInWithGoogle' + e.toString());
       return null;
@@ -94,10 +98,11 @@ class UserModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       _user = await _userRepository.signInWithFacebook();
+      if(_user != null)
       return _user;
-    } catch (e) {
-      debugPrint('Hata: user_model -> signInWithFacebook' + e.toString());
-      return null;
+      else {
+        return null;
+      }
     } finally {
       state = ViewState.Idle;
     }
@@ -175,7 +180,7 @@ class UserModel with ChangeNotifier implements AuthBase {
 
  
 
-  Stream<List<Message>> getMessages(
+  Stream<List<Messages>> getMessages(
       String currentUserID, String oppositeUserID) {
     var result = _userRepository.getMessages(currentUserID, oppositeUserID);
     return result;

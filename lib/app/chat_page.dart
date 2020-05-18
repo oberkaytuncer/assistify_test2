@@ -106,14 +106,15 @@ class _ChatPageState extends State<ChatPage> {
               ),
               onPressed: () async {
                 if (_messageController.text.trim().length > 0) {
-                  Message _willSaveMessage = Message(
+                  Messages _willSaveMessage = Messages(
                     messageFrom: _chatModel.currentUser.userID,
                     messageTo: _chatModel.oppositeUser.userID,
                     isItFromMe: true,
                     messageContent: _messageController.text,
                   );
 
-                  var result = await _chatModel.saveMessage(_willSaveMessage);
+                  var result = await _chatModel.saveMessage(
+                      _willSaveMessage, _chatModel.currentUser);
 
                   if (result) {
                     _messageController.clear();
@@ -130,7 +131,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _createChatBubble(Message currentMessage) {
+  Widget _createChatBubble(Messages currentMessage) {
     Color _receivedMessageColor = Colors.purple;
     Color _sentMessageColor = Theme.of(context).primaryColor;
     final _chatModel = Provider.of<ChatViewModel>(context);

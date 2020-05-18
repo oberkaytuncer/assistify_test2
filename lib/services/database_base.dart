@@ -10,8 +10,8 @@ abstract class DBBase {
  
   Future<List<User>> getUserWithPagination(User lastGottenUser, int amountOfUserToGet);
   Future<List<Conversation>> getAllConversations(String userID);
-  Stream<List<Message>> getMessages(
+  Stream<List<Messages>> getMessages(
       String currentUserID, String oppositeUserID);
-  Future<bool> saveMessage(Message willSaveMessage);
+  Future<bool> saveMessage(Messages willSaveMessage);
   Future<DateTime> showTime(String userID);
 }

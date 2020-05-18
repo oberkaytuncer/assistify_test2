@@ -3,10 +3,16 @@ class Errors {
     switch (errorCode) {
       case 'ERROR_EMAIL_ALREADY_IN_USE':
         return 'Bu mail adresi zaten kullanılmaktadır. Lütfen farklı bir mail kullanınız.';
-        break;
+      
       case 'ERROR_USER_NOT_FOUND':
         return 'Bu kullanıcı sistemde bulunmamaktadır. Lütfen kullanıcı oluşturunuz.';
-        break;
+
+      case 'ERROR_USER_NOT_FOUND':
+        return 'Bu kullanıcı sistemde bulunmamaktadır. Lütfen kullanıcı oluşturunuz.';
+
+      case 'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL':
+        return 'Bu Facebook hesabınızdaki mail adresi daha önce G-Mail veya E-mail yöntemi ile sisteme kaydedilmiştir. Lüften kaydı bulunan mailiniz ile giriş yapınız.';
+
 
 
 

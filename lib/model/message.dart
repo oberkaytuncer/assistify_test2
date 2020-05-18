@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Message {
+class Messages {
   final String messageFrom;
   final String messageTo;
   final bool isItFromMe;
   final String messageContent;
   final Timestamp messageDate;
 
-  Message({
+  Messages({
     this.messageFrom,
     this.messageTo,
     this.isItFromMe,
@@ -25,7 +25,7 @@ class Message {
     };
   }
 
-  Message.fromMap(Map<String, dynamic> map)
+  Messages.fromMap(Map<String, dynamic> map)
       : messageFrom = map['messageFrom'],
         messageTo = map['messageTo'],
         isItFromMe = map['isItFromMe'],

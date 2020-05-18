@@ -102,8 +102,8 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
 //idle a tekrar düşüyor ve hem ana sayfa çağırılıyor hem de  scaffold un single kısmı çağırılıyor.
 
     if (_userModel.user != null) {
-      Future.delayed(Duration(milliseconds: 10), () {
-        Navigator.of(context).pop();
+      Future.delayed(Duration(milliseconds: 1), () {
+        Navigator.of(context).popUntil(ModalRoute.withName('/'));
       });
     }
 
