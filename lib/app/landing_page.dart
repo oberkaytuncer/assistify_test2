@@ -16,6 +16,7 @@ class LandingPage extends StatelessWidget {
         return SignInPage();
       } else {
         debugPrint('usermodel null dönmedi. Brenc test 2 ');
+        debugPrint('Bu alan da stash testi için ');
         return HomePage(user: _userModel.user);
       }
     } else if (_userModel.state == ViewState.Busy) {
