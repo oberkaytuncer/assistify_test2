@@ -12,7 +12,7 @@ class LandingPage extends StatelessWidget {
 
     if (_userModel.state == ViewState.Idle) {
       if (_userModel.user == null) {
-        debugPrint('usermodel null döndü.');
+        debugPrint('Usermodel null döndü. Ama artık yeni branchde olmam gerek');
         return SignInPage();
       } else {
         debugPrint('usermodel null dönmedi');
