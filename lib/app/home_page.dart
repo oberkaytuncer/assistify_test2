@@ -5,7 +5,6 @@ import 'package:flutter_messaging_app/app/my_custom_bottom_navi.dart';
 import 'package:flutter_messaging_app/app/profile_tab.dart';
 import 'package:flutter_messaging_app/app/tab_items.dart';
 import 'package:flutter_messaging_app/app/users_tab.dart';
-import 'package:flutter_messaging_app/common_widget/platform_sensetive_widget/platform_sensetive_alert_dialog.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/notification_handler.dart';
 import 'package:flutter_messaging_app/view_model/all_users_view_model.dart';

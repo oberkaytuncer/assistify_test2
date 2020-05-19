@@ -105,7 +105,7 @@ class FirebaseAuthService implements AuthBase {
             _faceResult.errorMessage);
         break;
     }
-    //return null;
+    return null;
   }
 
   @override

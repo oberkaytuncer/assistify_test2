@@ -1,4 +1,3 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_messaging_app/model/message.dart';
@@ -24,5 +23,6 @@ class NotificationSendingService {
       print("işlem başarısız" + response.statusCode.toString());
       print("Json: " + json);
     }
+    return true;
   }
 }

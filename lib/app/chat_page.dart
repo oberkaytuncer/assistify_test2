@@ -1,9 +1,9 @@
 import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/model/message.dart';
-import 'package:flutter_messaging_app/model/user.dart';
+
 import 'package:flutter_messaging_app/view_model/chat_view_model.dart';
-import 'package:flutter_messaging_app/view_model/user_model.dart';
+
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +19,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _scrollController.addListener(_scrollListener);
   }
