@@ -15,7 +15,7 @@ class LandingPage extends StatelessWidget {
         debugPrint('Usermodel null döndü. Ama artık yeni branchde olmam gerek');
         return SignInPage();
       } else {
-        debugPrint('usermodel null dönmedi');
+        debugPrint('usermodel null dönmedi. Brenc test 2 ');
         return HomePage(user: _userModel.user);
       }
     } else if (_userModel.state == ViewState.Busy) {
