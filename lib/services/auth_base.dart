@@ -10,4 +10,6 @@ abstract class AuthBase {
   Future<User> signInWithFacebook();
   Future<User> signInWithEmailAndPassword(String email, String password);
   Future<User> createUserWithEmailAndPassword(String email, String password);
+
+  
 }

@@ -5,6 +5,7 @@ import 'package:flutter_messaging_app/services/firebase_storage_service.dart';
 
 import 'package:flutter_messaging_app/services/firestore_db_service.dart';
 import 'package:flutter_messaging_app/services/notification_sending_service.dart';
+import 'package:flutter_messaging_app/services/user_defaults.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt locator = GetIt.asNewInstance();
@@ -16,5 +17,7 @@ void setupLocator() {
   locator.registerLazySingleton(() => FakeAuthenticationService());
   locator.registerLazySingleton(() => UserRepository());
   locator.registerLazySingleton(() => NotificationSendingService());
+  locator.registerLazySingleton(() => User_Defaults());
+  
 
 }

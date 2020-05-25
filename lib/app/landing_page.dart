@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_messaging_app/services/user_defaults.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
 import 'home_page.dart';
 import 'signin_page/signin_page.dart';
-
 
 class LandingPage extends StatelessWidget {
   @override
@@ -12,12 +12,15 @@ class LandingPage extends StatelessWidget {
 
     if (_userModel.state == ViewState.Idle) {
       if (_userModel.user == null) {
-        debugPrint('Usermodel null döndü. Ama artık yeni branchde olmam gerek');
         return SignInPage();
       } else {
-        debugPrint('usermodel null dönmedi. Brenc test 2 ');
-        debugPrint('Bu alan da stash testi için ');
-        return HomePage(user: _userModel.user);
+        if (_userModel.user.phoneNumber == '0555 555 55 55') {
+          print('telefon numarasını değiştirmen gerek');
+          return HomePage(user: _userModel.user);
+        } else {
+          print('telefon numaranı değiştirmene gerek yok.');
+          return HomePage(user: _userModel.user);
+        }
       }
     } else if (_userModel.state == ViewState.Busy) {
       return Scaffold(

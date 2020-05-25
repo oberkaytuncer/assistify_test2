@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_messaging_app/common_widget/platform_sensetive_widget/platform_sensetive_alert_dialog.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -48,8 +49,12 @@ class NotificationHandler {
 
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print("onMessage tetiklendi: $message");
+        print("onMessage tetiklendiiiiiii: $message");
         showNotification(message);
+        AlertDialogPlatformSensetive(
+            title: message['data']['title'],
+            content: message['data']['body'],
+            mainActionButtonText: 'Tamam').show(context);
       },
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {

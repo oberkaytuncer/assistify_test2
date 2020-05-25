@@ -3,27 +3,36 @@ import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/services/database_base.dart';
+import 'package:flutter_messaging_app/services/user_defaults.dart';
+
+
 
 class FirestoreDBService implements DBBase {
   final Firestore _firebaseDB = Firestore.instance;
+  User_Defaults user_defaults = User_Defaults();
 
   @override
   Future<bool> saveUser(User user) async {
     DocumentSnapshot _readedUser =
-        await Firestore.instance //Burada user firebase'den okunuyor.
-            .document('users/' + user.userID)
+        await Firestore.instance 
+            .document('users/${user.userID}')
             .get();
 
-    if (_readedUser.data == null) {
+    if (_readedUser.data == null)  {
       await _firebaseDB
           .collection('users')
           .document(user.userID)
-          .setData(user.toMap()); //Burada user firestore database ekleniyor.
+          .setData(user.toMap()); 
+
       return true;
+
     } else {
       return true;
     }
   }
+
+
+
 
   @override
   Future<User> readUser(String userID) async {
@@ -33,32 +42,6 @@ class FirestoreDBService implements DBBase {
     User _readedUserObject = User.fromMap(_readedUserInfoMap);
     print('Okunan User Nesnesi: ' + _readedUserObject.toString());
     return _readedUserObject;
-  }
-
-  @override
-  Future<bool> updateUserName(String userID, String newUserName) async {
-    var users = await _firebaseDB
-        .collection('users')
-        .where('userName', isEqualTo: newUserName)
-        .getDocuments();
-    if (users.documents.length >= 1) {
-      return false;
-    } else {
-      await _firebaseDB
-          .collection('users')
-          .document(userID)
-          .updateData({'userName': newUserName});
-      return true;
-    }
-  }
-
-  @override
-  Future<bool> updateProfilePhoto(String userID, String profilePhotoURL) async {
-    await _firebaseDB
-        .collection('users')
-        .document(userID)
-        .updateData({'profilePhotoURL': profilePhotoURL});
-    return true;
   }
 
   @override
@@ -231,5 +214,31 @@ class FirestoreDBService implements DBBase {
      else 
       return null;
     
+  }
+
+  @override
+  Future<bool> updateProfilePhoto(String userID, String profilePhotoURL) async {
+    await _firebaseDB
+        .collection('users')
+        .document(userID)
+        .updateData({'profilePhotoURL': profilePhotoURL});
+    return true;
+  }
+
+  @override
+  Future<bool> updateUserName(String userID, String newUserName) async {
+    var users = await _firebaseDB
+        .collection('users')
+        .where('userName', isEqualTo: newUserName)
+        .getDocuments();
+    if (users.documents.length >= 1) {
+      return false;
+    } else {
+      await _firebaseDB
+          .collection('users')
+          .document(userID)
+          .updateData({'userName': newUserName});
+      return true;
+    }
   }
 }

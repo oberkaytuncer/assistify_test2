@@ -16,6 +16,7 @@ class UserModel with ChangeNotifier implements AuthBase {
   User _user;
   String emailErrorMessage;
   String passwordErrorMessage;
+  String phoneNumberErrorMessage;
 
   ViewState get state => _state;
 
@@ -199,4 +200,12 @@ class UserModel with ChangeNotifier implements AuthBase {
         lastGottenUser, amountOfUserToGet);
     return result;
   }
+
+
+  Future<User> getUserDataFromUserDefault() async {
+    User gottenUserFromDisk = await _userRepository.getUserDataFromUserDefault();
+    return gottenUserFromDisk;
+  }
+
+
 }

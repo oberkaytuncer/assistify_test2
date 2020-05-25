@@ -12,23 +12,21 @@ class FirebaseAuthService implements AuthBase {
   Future<User> currentUser() async {
     try {
       FirebaseUser user = await _firebaseAuth.currentUser();
-      return _userFromFirebase(user);
+      return _userFromFirebaseToUser(user);
     } catch (e) {
       debugPrint('Hata: firebase_auth_service -> currentUser' + e.toString());
       return null;
     }
   }
 
-  User _userFromFirebase(FirebaseUser user) {
+  User _userFromFirebaseToUser(FirebaseUser user) {
     if (user == null) {
       return null;
-    } else{
-      
+    } else {
+      User convertedUser = User(userID: user.uid, email: user.email);
+
+      return convertedUser;
     }
-
-    User convertedUser = User(userID: user.uid, email: user.email);
-
-    return convertedUser;
   }
 
   @override
@@ -51,7 +49,7 @@ class FirebaseAuthService implements AuthBase {
   Future<User> signInAnonymously() async {
     try {
       AuthResult result = await _firebaseAuth.signInAnonymously();
-      return _userFromFirebase(result.user);
+      return _userFromFirebaseToUser(result.user);
     } catch (e) {
       debugPrint(
           'Hata: firebase_auth_service -> signInAnonymously' + e.toString());
@@ -72,7 +70,7 @@ class FirebaseAuthService implements AuthBase {
                 idToken: _googleAuth.idToken,
                 accessToken: _googleAuth.accessToken));
         FirebaseUser _user = result.user;
-        return _userFromFirebase(_user);
+        return _userFromFirebaseToUser(_user);
       } else {
         return null;
       }
@@ -94,7 +92,7 @@ class FirebaseAuthService implements AuthBase {
               FacebookAuthProvider.getCredential(
                   accessToken: _faceResult.accessToken.token));
           FirebaseUser _user = _firebaseResult.user;
-          return _userFromFirebase(_user);
+          return _userFromFirebaseToUser(_user);
         }
         break;
       case FacebookLoginStatus.cancelledByUser:
@@ -120,10 +118,12 @@ class FirebaseAuthService implements AuthBase {
 
     FirebaseUser firebaseUser = authResult.user;
 
-    User createdUser = _userFromFirebase(firebaseUser);
-    String emailOfCreatedEmail = createdUser.email;
+    User createdUser = _userFromFirebaseToUser(firebaseUser);
+    String emailOfCreatedUser = createdUser.email;
+    String phoneNumberOfCreatedUser = createdUser.phoneNumber;
 
-    debugPrint(emailOfCreatedEmail);
+    debugPrint(
+        'Yeni yaratılan kullanıcının emaili: $emailOfCreatedUser  , telefon numarası: $phoneNumberOfCreatedUser ');
 
     return createdUser;
   }
@@ -132,6 +132,6 @@ class FirebaseAuthService implements AuthBase {
   Future<User> signInWithEmailAndPassword(String email, String password) async {
     AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
-    return _userFromFirebase(result.user);
+    return _userFromFirebaseToUser(result.user);
   }
 }

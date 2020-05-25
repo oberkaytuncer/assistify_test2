@@ -6,6 +6,7 @@ import 'package:flutter_messaging_app/common_widget/buttons/gradient_button.dart
 import 'package:flutter_messaging_app/common_widget/cards/my_text_field.dart';
 import 'package:flutter_messaging_app/common_widget/platform_sensetive_widget/platform_sensetive_alert_dialog.dart';
 import 'package:flutter_messaging_app/model/user.dart';
+import 'package:flutter_messaging_app/services/user_defaults.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,7 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
   final _formKey = GlobalKey<FormState>();
   var _formType = FormType.SignIn;
   String _buttonText, _linkText;
+  String initialEmail = 'asd@asd.com';
 
   void _formSubmit(BuildContext context) async {
     _formKey.currentState.save();
@@ -38,6 +40,8 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
           print(
               'İşlem tamam: email_and_pass_signin_signout -> _signedInUser . Email ve şifre ile oturum açan kullanıcı ID: ' +
                   _signedInUser.userID);
+        print(
+            'Disk içindeki kullancı bilgileri1: ${_userModel.getUserDataFromUserDefault().toString()} ');
       } on PlatformException catch (e) {
         AlertDialogPlatformSensetive(
           title: 'Kullanıcı Girişi Hata',
@@ -47,11 +51,14 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
       }
     } else {
       try {
+        
         User _createdNewUser =
             await _userModel.createUserWithEmailAndPassword(_email, _password);
+            
         if (_createdNewUser != null)
           print('Email ve şifre ile yeni kullanıcı yaratılan ID: ' +
-              _createdNewUser.userID);
+              _createdNewUser.userID  );
+             
       } on PlatformException catch (e) {
         AlertDialogPlatformSensetive(
           title: 'Kullanıcı Oluşturma Hata',
@@ -71,12 +78,13 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final _userModel = Provider.of<UserModel>(context);
+
     _buttonText = _formType == FormType.SignIn ? 'Giriş Yap' : 'Kayıt ol';
     _linkText = _formType == FormType.SignIn
         ? 'Hesabınız yok mu? Kayıt olun.'
         : 'Hesabınız var mı? Giriş yapın';
 
-    final _userModel = Provider.of<UserModel>(context);
 /*
  //1Bu kısım Busy olduğu zaman dönen indicator
 
@@ -123,7 +131,7 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
                           errorText: _userModel.emailErrorMessage != null
                               ? _userModel.emailErrorMessage
                               : null,
-                          initialValue: 'berkay@berkay.com',
+                          initialValue: initialEmail,
                           hintText: 'E-mail',
                           labelText: 'Email',
                           onSaved: (String value) => _email = value),

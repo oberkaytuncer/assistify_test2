@@ -9,6 +9,7 @@ import 'package:flutter_messaging_app/services/firebase_auth_service.dart';
 import 'package:flutter_messaging_app/services/firebase_storage_service.dart';
 import 'package:flutter_messaging_app/services/firestore_db_service.dart';
 import 'package:flutter_messaging_app/services/notification_sending_service.dart';
+import 'package:flutter_messaging_app/services/user_defaults.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 enum AppMode { DEBUG, RELEASE }
@@ -22,6 +23,8 @@ class UserRepository implements AuthBase {
       locator<FirebaseStorageService>();
   NotificationSendingService _notificationSendingService =
       locator<NotificationSendingService>();
+  User_Defaults _user_defaults =
+      locator<User_Defaults>();
 
   AppMode appMode = AppMode.RELEASE;
 
@@ -116,16 +119,40 @@ class UserRepository implements AuthBase {
 
       bool _result = await _firestoreDBService.saveUser(_user);
 
-      if (_result == true) {
+      if (_result)  {
         User _readedUserFromFirestore =
             await _firestoreDBService.readUser(_user.userID);
 
+           await saveUserDataToUserDefault(_readedUserFromFirestore);
+
+           print('Önemlii : ${_readedUserFromFirestore.phoneNumber} ');
+
         return _readedUserFromFirestore;
-      } else {
+      }  {
         return null;
       }
     }
   }
+
+
+Future<bool> saveUserDataToUserDefault(User user) async  {
+  if (appMode == AppMode.DEBUG) {
+      return null;
+    } else {
+      bool result = await _user_defaults.saveUserDataToUserDefault(user);
+      return result;
+      }
+}
+Future<User> getUserDataFromUserDefault() async  {
+  if (appMode == AppMode.DEBUG) {
+      return null;
+    } else {
+     User gottenUserFromDisk = await _user_defaults.getUserDataFromUserDefault();
+     return gottenUserFromDisk;
+      }
+}
+
+
 
   @override
   Future<User> signInWithEmailAndPassword(String email, String password) async {
@@ -148,6 +175,8 @@ class UserRepository implements AuthBase {
     } else {
       bool result =
           await _firestoreDBService.updateUserName(userID, newUserName);
+
+          
       return result;
     }
   }
@@ -188,7 +217,7 @@ class UserRepository implements AuthBase {
           token = userTokens[willSaveMessage.messageTo];
           print('Localden geldi: ' + token);
         } else {
-          token = await _firestoreDBService.getToken(willSaveMessage.messageTo);
+          //token = await _firestoreDBService.getToken(willSaveMessage.messageTo);
           if(token != null)
           userTokens[willSaveMessage.messageTo] = token;
           print('Veritabanından geldi: ' + token);
