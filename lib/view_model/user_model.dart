@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/locator.dart';
 import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
+import 'package:flutter_messaging_app/model/studio.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/repository/user_repository.dart';
 import 'package:flutter_messaging_app/services/auth_base.dart';
@@ -17,6 +18,7 @@ class UserModel with ChangeNotifier implements AuthBase {
   String emailErrorMessage;
   String passwordErrorMessage;
   String phoneNumberErrorMessage;
+  Studio _studio;
 
   ViewState get state => _state;
 
@@ -30,15 +32,17 @@ class UserModel with ChangeNotifier implements AuthBase {
   }
 
   get user => _user;
+  get studio => _studio;
 
   @override
   Future<User> currentUser() async {
     try {
       state = ViewState.Busy;
       _user = await _userRepository.currentUser();
-      if(_user != null)
-      return _user;
-      else return null;
+      if (_user != null)
+        return _user;
+      else
+        return null;
     } catch (e) {
       debugPrint('Hata: user_model -> currentUser ' + e.toString());
       return null;
@@ -83,9 +87,10 @@ class UserModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       _user = await _userRepository.signInWithGoogle();
-      if(_user!= null)
-      return _user;
-      else return null;
+      if (_user != null)
+        return _user;
+      else
+        return null;
     } catch (e) {
       debugPrint('Hata: user_model -> signInWithGoogle' + e.toString());
       return null;
@@ -99,8 +104,8 @@ class UserModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       _user = await _userRepository.signInWithFacebook();
-      if(_user != null)
-      return _user;
+      if (_user != null)
+        return _user;
       else {
         return null;
       }
@@ -143,6 +148,32 @@ class UserModel with ChangeNotifier implements AuthBase {
     }
   }
 
+  Future<Studio> saveStudio(_studio) async {
+    if (_user != null) {
+      _studio = Studio(ownerID: _user.userID);
+      try {
+        if (_user != null) {
+          state = ViewState.Busy;
+          Studio result = await _userRepository.saveStudio(_studio, _user);
+
+          return result;
+        } else
+          return null;
+      } finally {
+        state = ViewState.Idle;
+      }
+    } 
+  }
+
+
+
+
+  Future<Studio> readStudio(String studioID) async {
+    Studio _willReadStudio =
+        await _userRepository.readStudio(studioID, _user.userID);
+    return _willReadStudio;
+  }
+
   bool _emailPasswordControl(String email, String password) {
     var result = true;
     if (password.length < 6) {
@@ -179,15 +210,11 @@ class UserModel with ChangeNotifier implements AuthBase {
     return url;
   }
 
- 
-
   Stream<List<Messages>> getMessages(
       String currentUserID, String oppositeUserID) {
     var result = _userRepository.getMessages(currentUserID, oppositeUserID);
     return result;
   }
-
- 
 
   Future<List<Conversation>> getAllConversations(userID) async {
     var result = await _userRepository.getAllConversations(userID);
@@ -200,12 +227,4 @@ class UserModel with ChangeNotifier implements AuthBase {
         lastGottenUser, amountOfUserToGet);
     return result;
   }
-
-
-  Future<User> getUserDataFromUserDefault() async {
-    User gottenUserFromDisk = await _userRepository.getUserDataFromUserDefault();
-    return gottenUserFromDisk;
-  }
-
-
 }

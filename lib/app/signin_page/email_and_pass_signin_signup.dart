@@ -5,8 +5,9 @@ import 'package:flutter_messaging_app/common_widget/buttons/flat_button.dart';
 import 'package:flutter_messaging_app/common_widget/buttons/gradient_button.dart';
 import 'package:flutter_messaging_app/common_widget/cards/my_text_field.dart';
 import 'package:flutter_messaging_app/common_widget/platform_sensetive_widget/platform_sensetive_alert_dialog.dart';
+import 'package:flutter_messaging_app/model/studio.dart';
 import 'package:flutter_messaging_app/model/user.dart';
-import 'package:flutter_messaging_app/services/user_defaults.dart';
+
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +24,7 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
   var _formType = FormType.SignIn;
   String _buttonText, _linkText;
   String initialEmail = 'asd@asd.com';
+  Studio _studio;
 
   void _formSubmit(BuildContext context) async {
     _formKey.currentState.save();
@@ -36,12 +38,11 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
       try {
         User _signedInUser =
             await _userModel.signInWithEmailAndPassword(_email, _password);
+
         if (_signedInUser != null)
           print(
-              'İşlem tamam: email_and_pass_signin_signout -> _signedInUser . Email ve şifre ile oturum açan kullanıcı ID: ' +
+              '**İşlem tamam: email_and_pass_signin_signout -> _signedInUser . Email ve şifre ile oturum açan kullanıcı ID: ' +
                   _signedInUser.userID);
-        print(
-            'Disk içindeki kullancı bilgileri1: ${_userModel.getUserDataFromUserDefault().toString()} ');
       } on PlatformException catch (e) {
         AlertDialogPlatformSensetive(
           title: 'Kullanıcı Girişi Hata',
@@ -51,14 +52,21 @@ class _EmailAndPassSignInPageState extends State<EmailAndPassSignInPage> {
       }
     } else {
       try {
-        
         User _createdNewUser =
             await _userModel.createUserWithEmailAndPassword(_email, _password);
-            
+
         if (_createdNewUser != null)
           print('Email ve şifre ile yeni kullanıcı yaratılan ID: ' +
-              _createdNewUser.userID  );
-             
+              _createdNewUser.userID);
+
+        Studio _studioCreatingresult = await _userModel.saveStudio(_studio);
+
+        if (_studioCreatingresult != null) {
+          print('*****burası çokemelli ID: ' +
+              _studioCreatingresult.studioID +
+              ' Adress: ' +
+              _studioCreatingresult.ownerID.toString());
+        }
       } on PlatformException catch (e) {
         AlertDialogPlatformSensetive(
           title: 'Kullanıcı Oluşturma Hata',

@@ -1,38 +1,62 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
+import 'package:flutter_messaging_app/model/studio.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/services/database_base.dart';
-import 'package:flutter_messaging_app/services/user_defaults.dart';
-
-
 
 class FirestoreDBService implements DBBase {
   final Firestore _firebaseDB = Firestore.instance;
-  User_Defaults user_defaults = User_Defaults();
 
   @override
   Future<bool> saveUser(User user) async {
     DocumentSnapshot _readedUser =
-        await Firestore.instance 
-            .document('users/${user.userID}')
-            .get();
+        await Firestore.instance.document('users/${user.userID}').get();
 
-    if (_readedUser.data == null)  {
+    if (_readedUser.data == null) {
       await _firebaseDB
           .collection('users')
           .document(user.userID)
-          .setData(user.toMap()); 
+          .setData(user.toMap());
 
       return true;
-
     } else {
       return true;
     }
   }
 
+  Future<Studio> saveStudio(Studio studio, User studioOwner) async {
+    String _studioID = _firebaseDB.collection('studios').document().documentID;
 
+    String _studioOwnerID = studioOwner.userID;
 
+    studio = Studio.withStudioID(_studioID, _studioOwnerID);
+
+    var _willSaveStudioMap = studio.toMap();
+
+    await _firebaseDB
+        .collection('studios')
+        .document(_studioID)
+        .setData(_willSaveStudioMap);
+
+    var _studioWithStudioIDandOwnerID = studio;
+
+    return _studioWithStudioIDandOwnerID;
+  }
+
+  Future<Studio> readStudio(String studioID, String ownerID) async {
+    var _readedStudio = await _firebaseDB
+        .collection('studios')
+        .document(studioID)
+        .collection('studioOwner')
+        .document(ownerID)
+        .get();
+
+    Map<String, dynamic> _readedStudioInfoMap = _readedStudio.data;
+    Studio _readedStudioObject = Studio.fromMap(_readedStudioInfoMap);
+    print('Okunan Studio Nesnesi: ' + _readedStudioObject.toString());
+    return _readedStudioObject;
+  }
 
   @override
   Future<User> readUser(String userID) async {
@@ -209,11 +233,10 @@ class FirestoreDBService implements DBBase {
   Future<String> getToken(String messageTo) async {
     DocumentSnapshot _token =
         await _firebaseDB.document('tokens/' + messageTo).get();
-    if (_token != null) 
+    if (_token != null)
       return _token.data['token'];
-     else 
+    else
       return null;
-    
   }
 
   @override

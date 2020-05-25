@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter_messaging_app/locator.dart';
 import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
+import 'package:flutter_messaging_app/model/studio.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/services/auth_base.dart';
 import 'package:flutter_messaging_app/services/fake_auth_service.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_messaging_app/services/firebase_auth_service.dart';
 import 'package:flutter_messaging_app/services/firebase_storage_service.dart';
 import 'package:flutter_messaging_app/services/firestore_db_service.dart';
 import 'package:flutter_messaging_app/services/notification_sending_service.dart';
-import 'package:flutter_messaging_app/services/user_defaults.dart';
+
 import 'package:timeago/timeago.dart' as timeago;
 
 enum AppMode { DEBUG, RELEASE }
@@ -23,8 +24,6 @@ class UserRepository implements AuthBase {
       locator<FirebaseStorageService>();
   NotificationSendingService _notificationSendingService =
       locator<NotificationSendingService>();
-  User_Defaults _user_defaults =
-      locator<User_Defaults>();
 
   AppMode appMode = AppMode.RELEASE;
 
@@ -119,40 +118,19 @@ class UserRepository implements AuthBase {
 
       bool _result = await _firestoreDBService.saveUser(_user);
 
-      if (_result)  {
+      if (_result) {
         User _readedUserFromFirestore =
             await _firestoreDBService.readUser(_user.userID);
 
-           await saveUserDataToUserDefault(_readedUserFromFirestore);
-
-           print('Önemlii : ${_readedUserFromFirestore.phoneNumber} ');
+        print('Önemlii : ${_readedUserFromFirestore.phoneNumber} ');
 
         return _readedUserFromFirestore;
-      }  {
+      }
+      {
         return null;
       }
     }
   }
-
-
-Future<bool> saveUserDataToUserDefault(User user) async  {
-  if (appMode == AppMode.DEBUG) {
-      return null;
-    } else {
-      bool result = await _user_defaults.saveUserDataToUserDefault(user);
-      return result;
-      }
-}
-Future<User> getUserDataFromUserDefault() async  {
-  if (appMode == AppMode.DEBUG) {
-      return null;
-    } else {
-     User gottenUserFromDisk = await _user_defaults.getUserDataFromUserDefault();
-     return gottenUserFromDisk;
-      }
-}
-
-
 
   @override
   Future<User> signInWithEmailAndPassword(String email, String password) async {
@@ -176,7 +154,6 @@ Future<User> getUserDataFromUserDefault() async  {
       bool result =
           await _firestoreDBService.updateUserName(userID, newUserName);
 
-          
       return result;
     }
   }
@@ -217,16 +194,16 @@ Future<User> getUserDataFromUserDefault() async  {
           token = userTokens[willSaveMessage.messageTo];
           print('Localden geldi: ' + token);
         } else {
-          //token = await _firestoreDBService.getToken(willSaveMessage.messageTo);
-          if(token != null)
-          userTokens[willSaveMessage.messageTo] = token;
+          token = await _firestoreDBService.getToken(willSaveMessage.messageTo);
+          if (token != null) userTokens[willSaveMessage.messageTo] = token;
           print('Veritabanından geldi: ' + token);
         }
-        if(token !=null)
-        await _notificationSendingService.sendNotification(
-            willSaveMessage, currentUser, token);
-            return true;
-      }else return false;
+        if (token != null)
+          await _notificationSendingService.sendNotification(
+              willSaveMessage, currentUser, token);
+        return true;
+      } else
+        return false;
     }
   }
 
@@ -306,6 +283,26 @@ Future<User> getUserDataFromUserDefault() async  {
     } else {
       return await _firestoreDBService.getMessageWithPagination(
           currentUserID, oppositeUserID, lastGottenMessage, postsPerPage);
+    }
+  }
+
+  Future<Studio> saveStudio(Studio studio, User user) async {
+    if (appMode == AppMode.DEBUG) {
+      return null;
+    } else {
+      Studio result = await _firestoreDBService.saveStudio(studio, user);
+
+      return result;
+    }
+  }
+
+  Future<Studio> readStudio(String studioID, String userID) async {
+    if (appMode == AppMode.DEBUG) {
+      return null;
+    } else {
+      Studio result = await _firestoreDBService.readStudio(studioID, userID);
+
+      return result;
     }
   }
 }

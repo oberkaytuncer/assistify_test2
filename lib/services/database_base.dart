@@ -14,5 +14,7 @@ abstract class DBBase {
       String currentUserID, String oppositeUserID);
   Future<bool> saveMessage(Messages willSaveMessage);
   Future<DateTime> showTime(String userID);
+  Future<Studio> saveStudio(Studio studio ,User studioOwner);
+  Future<Studio> readStudio(String studioID, String ownerID);
   
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/app/landing_page.dart';
 import 'package:flutter_messaging_app/locator.dart';
-import 'package:flutter_messaging_app/services/user_defaults.dart';
+
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
 
