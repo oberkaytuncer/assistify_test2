@@ -44,7 +44,8 @@ class ChatViewModel with ChangeNotifier {
   }
 
   Future<bool> saveMessage(Messages willSaveMessage, User currentUser) async {
-    var willSaveResult = await _userRepository.saveMessage(willSaveMessage, currentUser);
+    var willSaveResult =
+        await _userRepository.saveMessage(willSaveMessage, currentUser);
     return willSaveResult;
   }
 

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter_messaging_app/locator.dart';
 import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
+import 'package:flutter_messaging_app/model/slot.dart';
 import 'package:flutter_messaging_app/model/studio.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/services/auth_base.dart';
@@ -207,6 +208,19 @@ class UserRepository implements AuthBase {
     }
   }
 
+
+
+   Future<bool> saveSlot(Slot willSaveSlot) async {
+      if (appMode == AppMode.DEBUG) {
+      return true;
+    } else {
+      var savingResult = await _firestoreDBService.saveSlot(willSaveSlot);
+      return savingResult;
+    }   
+
+
+   }
+
   Future<List<Conversation>> getAllConversations(userID) async {
     if (appMode == AppMode.DEBUG) {
       return [];
@@ -305,4 +319,8 @@ class UserRepository implements AuthBase {
       return result;
     }
   }
+
+ 
+
+  
 }

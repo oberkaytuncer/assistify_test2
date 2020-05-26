@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
+import 'package:flutter_messaging_app/model/slot.dart';
 import 'package:flutter_messaging_app/model/studio.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/services/database_base.dart';
@@ -23,25 +24,6 @@ class FirestoreDBService implements DBBase {
     } else {
       return true;
     }
-  }
-
-  Future<Studio> saveStudio(Studio studio, User studioOwner) async {
-    String _studioID = _firebaseDB.collection('studios').document().documentID;
-
-    String _studioOwnerID = studioOwner.userID;
-
-    studio = Studio.withStudioID(_studioID, _studioOwnerID);
-
-    var _willSaveStudioMap = studio.toMap();
-
-    await _firebaseDB
-        .collection('studios')
-        .document(_studioID)
-        .setData(_willSaveStudioMap);
-
-    var _studioWithStudioIDandOwnerID = studio;
-
-    return _studioWithStudioIDandOwnerID;
   }
 
   Future<Studio> readStudio(String studioID, String ownerID) async {
@@ -104,6 +86,23 @@ class FirestoreDBService implements DBBase {
         .toList());
     return result;
   }
+
+
+
+
+
+
+  @override
+  Future<bool> saveSlot(Slot willSaveSlot) async {
+    var _willSaveSlotMap = willSaveSlot.toMap();
+    await _firebaseDB
+        .collection('studios')
+        .document(willSaveSlot.slotOwnerStudioID)
+        .setData(_willSaveSlotMap);
+    return true;
+  }
+
+
 
   Future<bool> saveMessage(Messages willSaveMessage) async {
     var _messageID = _firebaseDB.collection('chats').document().documentID;
@@ -193,6 +192,10 @@ class FirestoreDBService implements DBBase {
 
     return _allUsers;
   }
+  
+
+
+  
 
   Future<List<Messages>> getMessageWithPagination(
       String currentUserID,
@@ -264,4 +267,27 @@ class FirestoreDBService implements DBBase {
       return true;
     }
   }
+
+  Future<Studio> saveStudio(Studio studio, User studioOwner) async {
+    String _studioID = _firebaseDB.collection('studios').document().documentID;
+
+    String _studioOwnerID = studioOwner.userID;
+
+    studio = Studio.withStudioID(_studioID, _studioOwnerID);
+
+    var _willSaveStudioMap = studio.toMap();
+
+    await _firebaseDB
+        .collection('studios')
+        .document(_studioID)
+        .collection('owner')
+        .document(_studioOwnerID)
+        .setData(_willSaveStudioMap);
+
+    var _studioWithStudioIDandOwnerID = studio;
+
+    return _studioWithStudioIDandOwnerID;
+  }
+
+  
 }

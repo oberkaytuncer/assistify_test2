@@ -23,6 +23,7 @@ class MyCustomBottomNavigationBar extends StatelessWidget {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
           items: [
+            _createNavigationItem(TabItem.Dashboard),
             _createNavigationItem(TabItem.Users),
             _createNavigationItem(TabItem.MyChat),
             _createNavigationItem(TabItem.Profile),

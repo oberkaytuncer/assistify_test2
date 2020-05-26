@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_messaging_app/app/dashboard_tab.dart';
 import 'package:flutter_messaging_app/app/my_conversation_tab.dart';
 import 'package:flutter_messaging_app/app/my_custom_bottom_navi.dart';
 import 'package:flutter_messaging_app/app/profile_tab.dart';
@@ -27,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   TabItem _currentTab = TabItem.Users;
 
   Map<TabItem, GlobalKey<NavigatorState>> navigatorsKeys = {
+    TabItem.Dashboard: GlobalKey<NavigatorState>(),
     TabItem.Users: GlobalKey<NavigatorState>(),
     TabItem.MyChat: GlobalKey<NavigatorState>(),
     TabItem.Profile: GlobalKey<NavigatorState>(),
@@ -34,6 +36,7 @@ class _HomePageState extends State<HomePage> {
 
   Map<TabItem, Widget> allTabs() {
     return {
+      TabItem.Dashboard : DashboardTab(),
       TabItem.Users: ChangeNotifierProvider(
         create: (context) => AllUsersViewModel(),
         child: UsersTab(),

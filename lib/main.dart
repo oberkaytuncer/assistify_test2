@@ -9,7 +9,7 @@ void main() {
   setupLocator();
   runApp(
     ChangeNotifierProvider(
-      create: (context) => UserModel(),
+      create: (BuildContext context) => UserModel(),
       child: MyApp(),
     ),
   );

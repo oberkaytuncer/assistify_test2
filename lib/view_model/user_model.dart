@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/locator.dart';
 import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
+import 'package:flutter_messaging_app/model/slot.dart';
 import 'package:flutter_messaging_app/model/studio.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/repository/user_repository.dart';
@@ -227,4 +228,9 @@ class UserModel with ChangeNotifier implements AuthBase {
         lastGottenUser, amountOfUserToGet);
     return result;
   }
+
+ 
+
+
+
 }

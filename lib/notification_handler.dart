@@ -51,10 +51,7 @@ class NotificationHandler {
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage tetiklendiiiiiii: $message");
         showNotification(message);
-        AlertDialogPlatformSensetive(
-            title: message['data']['title'],
-            content: message['data']['body'],
-            mainActionButtonText: 'Tamam').show(context);
+        
       },
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
