@@ -1,22 +1,28 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_messaging_app/app/dashboard_tab.dart';
 import 'package:flutter_messaging_app/utils/HexColor.dart';
-import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/services.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+import 'dart:convert' show JSON;
 
-class AddSlotScreenMonthly extends StatefulWidget {
+class AddMonthlySlotScreen extends StatefulWidget {
   String text;
-  AddSlotScreenMonthly({Key key, @required this.text}) : super(key: key);
+
+  AddMonthlySlotScreen({Key key, @required this.text}) : super(key: key);
 
   @override
-  _AddSlotScreenMonthlyState createState() =>
-      _AddSlotScreenMonthlyState(this.text);
+  _AddMonthlySlotScreenState createState() =>
+      _AddMonthlySlotScreenState(this.text);
 }
 
-class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
+class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
   //String selectedDate;
-  _AddSlotScreenMonthlyState(this.date);
+  _AddMonthlySlotScreenState(this.date);
 
   String date = "";
   String selectedDate = "";
@@ -25,6 +31,7 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
   String selectedStatus;
   var dateFieldController = TextEditingController();
   var startTimeFieldController = TextEditingController();
+  var endTimeFieldController = TextEditingController();
 
   ProgressDialog progressDialog;
 
@@ -58,16 +65,21 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
 
   List datesList = List();
 
+  DatabaseReference ref =
+      FirebaseDatabase.instance.reference().child("grounds");
+
   Future<Null> configureSlotsWithTime(BuildContext context) async {
     TimeOfDay timeOfDay;
     startTimes.clear();
     endTimes.clear();
     setState(() {});
     if (tmpStart == null) {
-      timeOfDay =
-          await showTimePicker(context: context, initialTime: current_time);
+      timeOfDay = await showTimePicker(
+          context: context,
+          initialTime:
+              current_time); //burası ekrandaki o ekranı açıyor. Ok a tıklandığında  timeOfDay= seçilen değer oluyor.
     } else {
-      timeOfDay = tmpStart;
+      timeOfDay = await showTimePicker(context: context, initialTime: tmpStart);
     }
     startTimeFieldController.text = "${timeOfDay.hour} : ${timeOfDay.minute}";
     if (timeOfDay != null) {
@@ -80,6 +92,7 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
           if ((tmpStartTime.hour > 21 && tmpStartTime.minute > 30) ||
               tmpStartTime.hour == 0 ||
               tmpStartTime.hour == 23) {
+            print('büyük!');
           } else {
             int hourstart = tmpStartTime.hour;
             int minutesstart = tmpStartTime.minute;
@@ -88,7 +101,7 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
             DateTime dateTime = new DateTime(now.year, now.month, now.day,
                 tmpStartTime.hour, tmpStartTime.minute);
             print("Time $tmpStartTime");
-            DateTime end = dateTime.add(Duration(minutes: 90));
+            DateTime end = dateTime.add(Duration(minutes: 60));
             TimeOfDay endTime = TimeOfDay.fromDateTime(end);
             tmpStartTime = endTime;
             String endtimePeriod;
@@ -96,6 +109,7 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
 
             int hourend = endTime.hour;
             int minutesend = endTime.minute;
+             endTimeFieldController.text = "${hourend} : ${minutesend}";
             //String endTimePeriod = current_time.period.toString();
             selectedStartTime = "$hourstart:$minutesstart";
             selectedEndTime = "$hourend:$minutesend";
@@ -114,6 +128,9 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1);
+          setState(() {
+            selected_slot = startTimes.length;
+          });
         } else {
           Fluttertoast.showToast(
               msg: "Total Number of Slots: ${startTimes.length}",
@@ -127,6 +144,10 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -155,7 +176,7 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: <Widget>[
-                                            new SizedBox(
+                                            SizedBox(
                                                 width: double.infinity,
                                                 height: 40.0,
                                                 child: new FlatButton(
@@ -292,25 +313,23 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           children: <Widget>[
-                                            new SizedBox(
+                                            SizedBox(
                                               width: double.infinity,
                                               height: 50.0,
-                                              child: new TextField(
+                                              child: TextField(
                                                 enableInteractiveSelection:
                                                     false,
                                                 enabled: false,
                                                 controller:
                                                     startTimeFieldController,
-                                                decoration: new InputDecoration(
+                                                decoration: InputDecoration(
                                                     contentPadding:
                                                         const EdgeInsets.all(
                                                             20.0),
-                                                    border:
-                                                        new OutlineInputBorder(
-                                                      borderSide:
-                                                          new BorderSide(
-                                                              color: HexColor(
-                                                                  "39B54A")),
+                                                    border: OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: HexColor(
+                                                              "39B54A")),
                                                     ),
                                                     hintText: 'Start Time',
                                                     labelText: 'Start Time',
@@ -319,7 +338,34 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
                                                             color:
                                                                 Colors.green)),
                                               ),
-                                            )
+                                            ),
+                                            SizedBox(height: 20,),
+                                            SizedBox(
+                                              width: double.infinity,
+                                              height: 50.0,
+                                              child: TextField(
+                                                enableInteractiveSelection:
+                                                    false,
+                                                enabled: false,
+                                                controller:
+                                                    endTimeFieldController,
+                                                decoration: InputDecoration(
+                                                    contentPadding:
+                                                        const EdgeInsets.all(
+                                                            20.0),
+                                                    border: OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: HexColor(
+                                                              "39B54A")),
+                                                    ),
+                                                    hintText: 'End Time',
+                                                    labelText: 'End Time',
+                                                    suffixStyle:
+                                                        const TextStyle(
+                                                            color:
+                                                                Colors.green)),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       )),
@@ -417,9 +463,7 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
                 )));
   }
 
-  void submitSlotData(BuildContext context) async {
-    final _userModel = Provider.of<UserModel>(context, listen: false);
-
+  void submitSlotData(BuildContext context) {
     if (tmpStart == null || startTimeFieldController.text == "") {
       Fluttertoast.showToast(
           msg: "Please Select Start Time",
@@ -441,57 +485,39 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
     } else {
       ProgressDialog progressDialog =
           ProgressDialog(context, type: ProgressDialogType.Normal);
-
-      var _currentUser = await _userModel.currentUser();
-
-      if (_currentUser != null) {
-        /*setState(
-          () {
-            checkDateDatainFirestore(
-                progressDialog, context, _currentUser.userID);
-          },
-        );*/
-      }
+      FirebaseAuth.instance.currentUser().then((User) {
+        //Check if Date Data not Exists
+        setState(() {
+          checkDateDatainFirebase(progressDialog, context, User.uid);
+        });
+      });
     }
   }
-    /*
-  void checkDateDatainFirestore(
-      ProgressDialog progressDialog, BuildContext context, String userID) async {
-          progressDialog.show();
+
+  void checkDateDatainFirebase(
+      ProgressDialog progressDialog, BuildContext context, String id) {
+    progressDialog.show();
     DateTime datee = DateTime.parse(date);
-    final _userModel = Provider.of<UserModel>(context, listen: false);
-
-       _userModel.checkDateDatainFirestore(userID, datee);
-  
-
-
-
-
-
     int count = 0;
     datesList.clear();
-
     for (int i = 0; i < 30; i++) {
       print("Date Item : ${i + 1}");
       String dateStr = "${datee.day}-${datee.month}-${datee.year}";
       //check date Data in Slots
-
-  
-
       ref
           .child(id)
           .child("Slots")
           .child(dateStr)
           .once()
           .then((DataSnapshot dataSnapshot) {
-        var keys = dataSnapshot.value;
-        count = count + 1;
-        setState(() {
-          if (keys == null) {
-            datesList.add(dateStr);
-            print("Date: - ${datesList}");
-          }
-        });
+            var keys = dataSnapshot.value;
+            count = count + 1;
+           setState(() {
+            if (keys == null) {
+                datesList.add(dateStr);
+                print("Date: - ${datesList}");
+             }
+          });
         if (count == 30) {
           print("Uploading Data");
           //Upload Data
@@ -500,5 +526,72 @@ class _AddSlotScreenMonthlyState extends State<AddSlotScreenMonthly> {
       });
       datee = datee.add(Duration(days: 1));
     }
-  }*/
+  }
+
+  void uploadSlotsData(
+      ProgressDialog progressDialog, BuildContext context, String id) {
+    Fluttertoast.showToast(
+        msg: "Total ${datesList.length} days.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2);
+
+    if (datesList.length < 1) {
+      Fluttertoast.showToast(
+          msg: "All Dates Slots Already Present",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 2);
+      // progressDialog.dismiss();
+    } else {
+      print("Uploading Data1");
+      //Insert 30 Days Data
+      int count = 0;
+      for (int i = 0; i < datesList.length; i++) {
+        var uuid = new Uuid();
+        if (i == 0) {
+          for (int j = 0; j < startTimes.length; j++) {
+            String random_id = uuid.v1().toString();
+            String startTime = startTimes.elementAt(j);
+            String endTime = endTimes.elementAt(j);
+            var data = {
+              "slot_id": random_id,
+              "time": "$startTime - $endTime",
+              "startTime": startTime,
+              "endTime": endTime,
+              "status": selectedStatus,
+              "team1_logo": "",
+              "team1_name": "",
+              "team2_logo": "",
+              "team2_name": "",
+              "date": datesList.elementAt(i)
+            };
+            map1[random_id] = data;
+          }
+        }
+        ref.child(id).child("Slots").child(datesList.elementAt(i)).update(map1)
+          ..whenComplete(() {
+            count = count + 1;
+            print("Count : $count and Length: ${datesList.length} ");
+            if (count == datesList.length) {
+              Fluttertoast.showToast(
+                  msg:
+                      "Total ${datesList.length} days per ${startTimes.length} slots added Successfully.",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 2);
+              // progressDialog.dismiss();
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => DashboardTab()),
+                  (Route<dynamic> route) => false);
+            }
+          }).catchError((e) {
+            Scaffold.of(context).showSnackBar(SnackBar(
+                content:
+                    Text('There is Some Error, Try Again with Valid Info.')));
+            print(e);
+          });
+      }
+    }
+  }
 }

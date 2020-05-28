@@ -8,7 +8,7 @@ import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/services/auth_base.dart';
 import 'package:flutter_messaging_app/services/fake_auth_service.dart';
 import 'package:flutter_messaging_app/services/firebase_auth_service.dart';
-import 'package:flutter_messaging_app/services/realtime_firebase_db_service.dart';
+
 import 'package:flutter_messaging_app/services/firebase_storage_service.dart';
 import 'package:flutter_messaging_app/services/firestore_db_service.dart';
 import 'package:flutter_messaging_app/services/notification_sending_service.dart';
@@ -22,7 +22,7 @@ class UserRepository implements AuthBase {
   FakeAuthenticationService _fakeAuthenticationService =
       locator<FakeAuthenticationService>();
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
-  RealtimeFirebaseDBService _realtimeFirebaseDBService = locator<RealtimeFirebaseDBService>();
+  
   FirebaseStorageService _firebaseStorageService =
       locator<FirebaseStorageService>();
   NotificationSendingService _notificationSendingService =
@@ -321,23 +321,7 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Future<bool> addSlotDataDaily(String studioID, String userID, Slot slot) async {
-    if (appMode == AppMode.DEBUG) {
-      return false;
-    } else {
-      bool result = await _realtimeFirebaseDBService.addSlotDataDailyRealtimeDB(studioID, userID, slot);
+  
 
-      return result;
-    }
-  }
-
-  Future<List<Slot>> checkDateDatainFirestore(String studioID, userID,DateTime datee) async {
-     if (appMode == AppMode.DEBUG) {
-      return null;
-    } else {
-      List<Slot> result = await _firestoreDBService.checkDateDatainFirestore(studioID, userID, datee);
-
-      return result;
-    }
-  }
+ 
 }

@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 import 'package:flutter_messaging_app/Calender/calendar_tile.dart';
+import 'package:tuple/tuple.dart';
+
 import 'package:date_utils/date_utils.dart';
 
 typedef DayBuilder(BuildContext context, DateTime day);
@@ -86,7 +87,7 @@ class _CalendarState extends State<Calendar> {
 
     if (widget.showTodayAction) {
       leftInnerIcon = new InkWell(
-        child: new Text('Today'),
+        child: new Text('Bugün'),
         onTap: resetToToday,
       );
     } else {
@@ -113,23 +114,24 @@ class _CalendarState extends State<Calendar> {
   Widget get calendarGridView {
     return new Card(
       elevation: 3.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-      child:new Container(
-      child: new GestureDetector(
-        onHorizontalDragStart: (gestureDetails) => beginSwipe(gestureDetails),
-        onHorizontalDragUpdate: (gestureDetails) =>
-            getDirection(gestureDetails),
-        onHorizontalDragEnd: (gestureDetails) => endSwipe(gestureDetails),
-        child: new GridView.count(
-          shrinkWrap: true,
-          crossAxisCount: 7,
-          padding: new EdgeInsets.only(bottom: 5.0),
-          children: calendarBuilder(),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: new Container(
+        child: new GestureDetector(
+          onHorizontalDragStart: (gestureDetails) => beginSwipe(gestureDetails),
+          onHorizontalDragUpdate: (gestureDetails) =>
+              getDirection(gestureDetails),
+          onHorizontalDragEnd: (gestureDetails) => endSwipe(gestureDetails),
+          child: new GridView.count(
+            shrinkWrap: true,
+            crossAxisCount: 7,
+            padding: new EdgeInsets.only(bottom: 5.0),
+            children: calendarBuilder(),
+          ),
         ),
       ),
-    ),);
+    );
   }
 
   List<Widget> calendarBuilder() {
@@ -137,7 +139,17 @@ class _CalendarState extends State<Calendar> {
     List<DateTime> calendarDays =
         isExpanded ? selectedMonthsDays : selectedWeeksDays;
 
-    Utils.weekdays.forEach(
+    const List<String> myWeekdays = const [
+      "Paz",
+      "Ptesi",
+      "Sal",
+      "Çar",
+      "Per",
+      "Cum",
+      "Cts"
+    ];
+
+    myWeekdays.forEach(
       (day) {
         dayWidgets.add(
           new CalendarTile(
@@ -190,17 +202,15 @@ class _CalendarState extends State<Calendar> {
 
     if (isExpanded) {
       final TextStyle body1StyleDisabled = body1Style.copyWith(
-        color: Color.fromARGB(
-          100, 
-          body1Style.color.red, 
-          body1Style.color.green, 
-          body1Style.color.blue,
-        )
-      );
+          color: Color.fromARGB(
+        100,
+        body1Style.color.red,
+        body1Style.color.green,
+        body1Style.color.blue,
+      ));
 
-      dateStyles = monthStarted && !monthEnded
-          ? body1Style
-          : body1StyleDisabled;
+      dateStyles =
+          monthStarted && !monthEnded ? body1Style : body1StyleDisabled;
     } else {
       dateStyles = body1Style;
     }

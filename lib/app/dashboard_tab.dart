@@ -1,25 +1,25 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_messaging_app/app/EditSlotScreen.dart';
+import 'package:flutter_messaging_app/app/add_slot_daily.dart';
+import 'package:flutter_messaging_app/app/add_slot_monthly.dart';
+import 'package:flutter_messaging_app/model/slot.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_messaging_app/Calender/flutter_calendar.dart';
-import 'package:flutter_messaging_app/Pages/AddMonthlySlotScreen.dart';
-import 'package:flutter_messaging_app/Pages/AddSlotScreen.dart';
-import 'package:flutter_messaging_app/Pages/EditSlotScreen.dart';
 import 'package:flutter_messaging_app/utils/HexColor.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:flutter_messaging_app/utils/User_Defaults.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_messaging_app/Models/Slot.dart';
 
-class TimeSlotFragment extends StatefulWidget {
+
+class DashboardTab extends StatefulWidget {
   @override
-  _TimeSlotFragmentState createState() => _TimeSlotFragmentState();
+  _DashboardTabState createState() => _DashboardTabState();
 }
 
-class _TimeSlotFragmentState extends State<TimeSlotFragment> {
-  User_Defualts user_defualts = new User_Defualts();
+class _DashboardTabState extends State<DashboardTab> {
+  
   String drawer_picture;
   String uid;
   String selectDate = new DateTime.now().toString();
@@ -138,12 +138,13 @@ class _TimeSlotFragmentState extends State<TimeSlotFragment> {
                                           fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
                                     )
-                                  : new ListView.builder(
+                                  : ListView.builder(
                                       itemCount: slots.length,
                                       itemBuilder: (_, index) {
                                         return Slidable(
                                           actionExtentRatio: 0.25,
-                                          actionPane: SlidableDrawerActionPane(),
+                                          actionPane:
+                                              SlidableDrawerActionPane(),
                                           secondaryActions: <Widget>[
                                             IconSlideAction(
                                               caption: 'Edit',
@@ -151,8 +152,7 @@ class _TimeSlotFragmentState extends State<TimeSlotFragment> {
                                               icon: Icons.edit,
                                               onTap: () {
                                                 Navigator.pushReplacement(
-                                                    context,
-                                                    new MaterialPageRoute(
+                                                    context, MaterialPageRoute(
                                                         builder: (context) {
                                                   return EditSlotScreen(
                                                     slot: slots[index],
@@ -451,95 +451,5 @@ class _TimeSlotFragmentState extends State<TimeSlotFragment> {
         ),
       );
     }
-
-    /*return new Card(
-        elevation: 12.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(20.0)),
-        child: new Container(
-          height: 126.0,
-          margin: const EdgeInsets.all(5.0),
-          child: new Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                      flex: 2,
-                      child: Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            new Container(
-                              margin: new EdgeInsets.symmetric(vertical: 10.0),
-                              alignment: FractionalOffset.centerLeft,
-                              child: CircleAvatar(
-                                  backgroundColor:
-                                  HexColor("39B54A"),
-                                  radius: 50.0,
-                                  child: ClipOval(
-                                    child:
-                                    (logo!=null)?Image.network(""+logo,width: 92,height: 92,fit: BoxFit.fill,)
-                                        :Image.asset(
-                                      "assets/logo.png",
-                                      width: 92.0,
-                                      height: 92.0,
-                                    ),
-                                  )
-                              ),
-                            ),
-                          ],
-                        ),
-                      )),
-                  Expanded(
-                    flex: 5,
-                    child: Container(
-                      child: Column(
-                        children: <Widget>[
-                          new Container(
-                            alignment: FractionalOffset.topLeft,
-                            child: new Text(
-                              name,
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 26.0,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Container(
-                              alignment: FractionalOffset.centerLeft,
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              child: FlatButton.icon(
-                                  color: Colors.transparent,
-                                  onPressed: null,
-                                  icon: Icon(Icons.location_on),
-                                  label: Text(
-                                    city,
-                                    style: TextStyle(
-                                      color: Colors.black38,
-                                      fontSize: 18.0,
-                                    ),
-                                  ))),
-                          new Container(
-                            alignment: FractionalOffset.topLeft,
-                            child: new Text(
-                              about,
-                              style: TextStyle(
-                                  color: Colors.black26,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        ));*/
   }
 }

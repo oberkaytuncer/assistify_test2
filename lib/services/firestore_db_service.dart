@@ -51,55 +51,9 @@ class FirestoreDBService implements DBBase {
     return _readedUserObject;
   }
 
-  Future<bool> addSlotDataDaily(
-      String studioID, String userID, Slot slot) async {
-    var _willSaveSlotMap = slot.toMap();
-    await _firebaseDB
-        .collection('studios')
-        .document(studioID)
-        .collection(userID)
-        .document('slots')
-        .collection(slot.date)
-        .document(slot.slot_id)
-        .setData(_willSaveSlotMap);
 
-    return true;
-  }
 
-  Future<bool> addSlotDataDaily2(
-      String studioID, String userID, Slot slot) async {
-        var grounds_db = FirebaseDatabase.instance.reference().child("grounds");
-    var _willSaveSlotMap = slot.toMap();
-    grounds_db
-        .child(userID)
-        .child("Slots")
-        .child(slot.date)
-        .child(slot.slot_id)
-        .set(_willSaveSlotMap);
 
-    return true;
-  }
-
-  @override
-  Future<List<Slot>> checkDateDatainFirestore(
-      studioID, ownerID, DateTime datee) async {
-    List<Slot> allSlots = [];
-    String dateStr = "${datee.day}-${datee.month}-${datee.year}";
-
-    var result = await _firebaseDB
-        .collection('studios')
-        .document(studioID)
-        .collection(ownerID)
-        .document('slots')
-        .collection(dateStr)
-        .limit(1)
-        .snapshots();
-    /*for (DocumentSnapshot oneSlot in querySnapshot.documents) {
-      Slot _oneSlot = Slot.fromMap(oneSlot.data);
-      allSlots.add(_oneSlot);
-    }*/
-    return allSlots;
-  }
 
   @override
   Future<List<Conversation>> getAllConversations(String userID) async {

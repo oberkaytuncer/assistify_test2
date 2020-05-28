@@ -228,36 +228,12 @@ class UserModel with ChangeNotifier implements AuthBase {
     return result;
   }
 
-  Future<bool> addSlotDataDaily(userID, Slot slot) async {
   
-    try {
-      await _userRepository.addSlotDataDaily(
-          '36LbM2gX1AJ5C1F0jE8C', userID, slot);
-
-      return true;
-    } catch (e) {
-      debugPrint('Hata: user_model -> addSlotDataDaily' + e.toString());
-
-      return false;
-    } finally {
-
-    }
-  }
-
-
-  Future<List<Slot>> checkDateDatainFirestore(userID, DateTime datee) async {
   
-    try {
-      var result = await _userRepository.checkDateDatainFirestore(
-          '36LbM2gX1AJ5C1F0jE8C', userID, datee);
 
-      return result;
-    } catch (e) {
-      debugPrint('Hata: user_model -> addSlotDataDaily' + e.toString());
 
-      return null;
-    } 
-  }
+ 
+  
 
   
 
