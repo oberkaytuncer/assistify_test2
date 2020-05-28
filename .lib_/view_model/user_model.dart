@@ -9,6 +9,7 @@ import 'package:flutter_messaging_app/model/studio.dart';
 import 'package:flutter_messaging_app/model/user.dart';
 import 'package:flutter_messaging_app/repository/user_repository.dart';
 import 'package:flutter_messaging_app/services/auth_base.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 enum ViewState { Idle, Busy }
 
@@ -163,11 +164,9 @@ class UserModel with ChangeNotifier implements AuthBase {
       } finally {
         state = ViewState.Idle;
       }
-    } 
+    } else
+      return null;
   }
-
-
-
 
   Future<Studio> readStudio(String studioID) async {
     Studio _willReadStudio =
@@ -229,8 +228,38 @@ class UserModel with ChangeNotifier implements AuthBase {
     return result;
   }
 
- 
+  Future<bool> addSlotDataDaily(userID, Slot slot) async {
+  
+    try {
+      await _userRepository.addSlotDataDaily(
+          '36LbM2gX1AJ5C1F0jE8C', userID, slot);
+
+      return true;
+    } catch (e) {
+      debugPrint('Hata: user_model -> addSlotDataDaily' + e.toString());
+
+      return false;
+    } finally {
+
+    }
+  }
 
 
+  Future<List<Slot>> checkDateDatainFirestore(userID, DateTime datee) async {
+  
+    try {
+      var result = await _userRepository.checkDateDatainFirestore(
+          '36LbM2gX1AJ5C1F0jE8C', userID, datee);
 
+      return result;
+    } catch (e) {
+      debugPrint('Hata: user_model -> addSlotDataDaily' + e.toString());
+
+      return null;
+    } 
+  }
+
+  
+
+  
 }

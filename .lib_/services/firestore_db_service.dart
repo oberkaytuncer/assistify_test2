@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_messaging_app/model/conversation.dart';
 import 'package:flutter_messaging_app/model/message.dart';
 import 'package:flutter_messaging_app/model/slot.dart';
@@ -50,6 +51,56 @@ class FirestoreDBService implements DBBase {
     return _readedUserObject;
   }
 
+  Future<bool> addSlotDataDaily(
+      String studioID, String userID, Slot slot) async {
+    var _willSaveSlotMap = slot.toMap();
+    await _firebaseDB
+        .collection('studios')
+        .document(studioID)
+        .collection(userID)
+        .document('slots')
+        .collection(slot.date)
+        .document(slot.slot_id)
+        .setData(_willSaveSlotMap);
+
+    return true;
+  }
+
+  Future<bool> addSlotDataDaily2(
+      String studioID, String userID, Slot slot) async {
+        var grounds_db = FirebaseDatabase.instance.reference().child("grounds");
+    var _willSaveSlotMap = slot.toMap();
+    grounds_db
+        .child(userID)
+        .child("Slots")
+        .child(slot.date)
+        .child(slot.slot_id)
+        .set(_willSaveSlotMap);
+
+    return true;
+  }
+
+  @override
+  Future<List<Slot>> checkDateDatainFirestore(
+      studioID, ownerID, DateTime datee) async {
+    List<Slot> allSlots = [];
+    String dateStr = "${datee.day}-${datee.month}-${datee.year}";
+
+    var result = await _firebaseDB
+        .collection('studios')
+        .document(studioID)
+        .collection(ownerID)
+        .document('slots')
+        .collection(dateStr)
+        .limit(1)
+        .snapshots();
+    /*for (DocumentSnapshot oneSlot in querySnapshot.documents) {
+      Slot _oneSlot = Slot.fromMap(oneSlot.data);
+      allSlots.add(_oneSlot);
+    }*/
+    return allSlots;
+  }
+
   @override
   Future<List<Conversation>> getAllConversations(String userID) async {
     QuerySnapshot querySnapshot = await _firebaseDB
@@ -87,23 +138,19 @@ class FirestoreDBService implements DBBase {
     return result;
   }
 
-
-
-
-
-
-  @override
+/*@override
   Future<bool> saveSlot(Slot willSaveSlot) async {
     var _willSaveSlotMap = willSaveSlot.toMap();
     await _firebaseDB
         .collection('studios')
         .document(willSaveSlot.slotOwnerStudioID)
+        .collection('owner')
+        .document(willSaveSlot.slotOwnerStudioID)
         .setData(_willSaveSlotMap);
     return true;
-  }
+  }*/
 
-
-
+  @override
   Future<bool> saveMessage(Messages willSaveMessage) async {
     var _messageID = _firebaseDB.collection('chats').document().documentID;
     var _myDocumentID =
@@ -192,10 +239,6 @@ class FirestoreDBService implements DBBase {
 
     return _allUsers;
   }
-  
-
-
-  
 
   Future<List<Messages>> getMessageWithPagination(
       String currentUserID,
@@ -280,14 +323,11 @@ class FirestoreDBService implements DBBase {
     await _firebaseDB
         .collection('studios')
         .document(_studioID)
-        .collection('owner')
-        .document(_studioOwnerID)
-        .setData(_willSaveStudioMap);
+        .collection(_studioOwnerID)
+        .add(_willSaveStudioMap);
 
     var _studioWithStudioIDandOwnerID = studio;
 
     return _studioWithStudioIDandOwnerID;
   }
-
-  
 }

@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 import 'package:flutter_messaging_app/Calender/calendar_tile.dart';
+import 'package:tuple/tuple.dart';
+
 import 'package:date_utils/date_utils.dart';
 
 typedef DayBuilder(BuildContext context, DateTime day);
@@ -86,7 +87,7 @@ class _CalendarState extends State<Calendar> {
 
     if (widget.showTodayAction) {
       leftInnerIcon = new InkWell(
-        child: new Text('Today'),
+        child: new Text('Bugün'),
         onTap: resetToToday,
       );
     } else {
@@ -137,7 +138,17 @@ class _CalendarState extends State<Calendar> {
     List<DateTime> calendarDays =
         isExpanded ? selectedMonthsDays : selectedWeeksDays;
 
-    Utils.weekdays.forEach(
+       const List<String> myWeekdays = const [
+    "Paz",
+    "Ptesi",
+    "Sal",
+    "Çar",
+    "Per",
+    "Cum",
+    "Cts"
+  ];
+
+    myWeekdays.forEach(
       (day) {
         dayWidgets.add(
           new CalendarTile(
