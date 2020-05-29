@@ -64,8 +64,8 @@ class _AddSlotScreenState extends State<AddSlotScreen> {
         print(timeOfDay.hour);
         print(timeOfDay.minute);
         if (timeOfDay.hour > 21 && timeOfDay.minute > 29) {
-          Scaffold.of(context).showSnackBar(new SnackBar(
-              content: new Text("You Cannot Choose Time greater then 10:29 PM"),
+          Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text("You Cannot Choose Time greater then 10:29 PM"),
               backgroundColor: Colors.red,
               duration: Duration(seconds: 3)));
         } else {
@@ -408,13 +408,13 @@ class _AddSlotScreenState extends State<AddSlotScreen> {
   }
 
   //Implementation of Submit Slot in Database
-  void submitSlotData(BuildContext context) {
+  void submitSlotData(BuildContext context) async {
     if (selectedDate != null && selectedDate != "") {
       if (selectedStartTime != null &&
           selectedStartTime != "" &&
           selectedEndTime != null &&
           selectedEndTime != "") {
-        var uuid = new Uuid();
+        var uuid = Uuid();
         progressDialog =
             ProgressDialog(context, type: ProgressDialogType.Normal);
         progressDialog.show();
@@ -432,9 +432,9 @@ class _AddSlotScreenState extends State<AddSlotScreen> {
           "date": selectedDate
         };
 
-        FirebaseAuth.instance.currentUser().then((User) {
+        await FirebaseAuth.instance.currentUser().then((_user) {
           grounds_db
-              .child(User.uid)
+              .child(_user.uid)
               .child("Slots")
               .child(selectedDate)
               .child(random_id)
@@ -448,6 +448,7 @@ class _AddSlotScreenState extends State<AddSlotScreen> {
 
             Scaffold.of(context)
                 .showSnackBar(SnackBar(content: Text('Slot Add Successfully')));
+            progressDialog.hide();
           }).catchError((e) {
             Scaffold.of(context).showSnackBar(SnackBar(
                 content:
@@ -455,6 +456,8 @@ class _AddSlotScreenState extends State<AddSlotScreen> {
             print(e);
           });
         });
+
+        progressDialog.hide();
       } else {
         Scaffold.of(context).showSnackBar(new SnackBar(
           content: new Text("Please Choose Time"),

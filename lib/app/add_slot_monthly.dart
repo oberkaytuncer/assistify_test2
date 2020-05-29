@@ -463,7 +463,7 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
                 )));
   }
 
-  void submitSlotData(BuildContext context) {
+  void submitSlotData(BuildContext context) async {
     if (tmpStart == null || startTimeFieldController.text == "") {
       Fluttertoast.showToast(
           msg: "Please Select Start Time",
@@ -485,7 +485,7 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
     } else {
       ProgressDialog progressDialog =
           ProgressDialog(context, type: ProgressDialogType.Normal);
-      FirebaseAuth.instance.currentUser().then((User) {
+      await FirebaseAuth.instance.currentUser().then((User) {
         //Check if Date Data not Exists
         setState(() {
           checkDateDatainFirebase(progressDialog, context, User.uid);
@@ -529,7 +529,7 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
   }
 
   void uploadSlotsData(
-      ProgressDialog progressDialog, BuildContext context, String id) {
+      ProgressDialog progressDialog, BuildContext context, String id)   {
     Fluttertoast.showToast(
         msg: "Total ${datesList.length} days.",
         toastLength: Toast.LENGTH_SHORT,
@@ -542,18 +542,20 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 2);
-      // progressDialog.dismiss();
+      progressDialog.hide();
     } else {
       print("Uploading Data1");
       //Insert 30 Days Data
       int count = 0;
       for (int i = 0; i < datesList.length; i++) {
         var uuid = new Uuid();
+       
         if (i == 0) {
           for (int j = 0; j < startTimes.length; j++) {
             String random_id = uuid.v1().toString();
             String startTime = startTimes.elementAt(j);
             String endTime = endTimes.elementAt(j);
+       
             var data = {
               "slot_id": random_id,
               "time": "$startTime - $endTime",
@@ -564,12 +566,13 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
               "team1_name": "",
               "team2_logo": "",
               "team2_name": "",
-              "date": datesList.elementAt(i)
+              "date": datesList.elementAt(i),
             };
+         
             map1[random_id] = data;
           }
         }
-        ref.child(id).child("Slots").child(datesList.elementAt(i)).update(map1)
+           ref.child(id).child("Slots").child(datesList.elementAt(i)).update(map1)
           ..whenComplete(() {
             count = count + 1;
             print("Count : $count and Length: ${datesList.length} ");
@@ -580,7 +583,7 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 2);
-              // progressDialog.dismiss();
+               progressDialog.hide();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => DashboardTab()),
                   (Route<dynamic> route) => false);

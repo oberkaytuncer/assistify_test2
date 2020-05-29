@@ -20,7 +20,7 @@ class DashboardTab extends StatefulWidget {
 
 class _DashboardTabState extends State<DashboardTab> {
   
-  String drawer_picture;
+  
   String uid;
   String selectDate = new DateTime.now().toString();
 
@@ -32,7 +32,7 @@ class _DashboardTabState extends State<DashboardTab> {
 
   @override
   void initState() {
-    // TODO: implement initState
+ 
     getData();
     super.initState();
   }
@@ -51,7 +51,7 @@ class _DashboardTabState extends State<DashboardTab> {
     int year = dateTime.year;
     date = "$day-$month-$year";
 
-    FirebaseAuth.instance.currentUser().then((user) {
+      await FirebaseAuth.instance.currentUser().then((user) {
       grounds_db
           .child(user.uid)
           .child("Slots")
@@ -90,6 +90,7 @@ class _DashboardTabState extends State<DashboardTab> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       body: Builder(
         builder: (context) => Stack(
@@ -234,7 +235,7 @@ class _DashboardTabState extends State<DashboardTab> {
   }
 
   //Implementation of One Day Slot
-  void addTimeSlot1(BuildContext context) {
+  void addTimeSlot1(BuildContext context)  {
     Navigator.push(context, new MaterialPageRoute(builder: (context) {
       return AddSlotScreen(
         text: selectDate,
@@ -242,20 +243,28 @@ class _DashboardTabState extends State<DashboardTab> {
     }));
   }
 
-  //Delete Slot From Firebase RealTime Database
-  void deleteSlot(Slot slot, BuildContext context, int index) {
+  //Delete Slot From Firebase RealTime Database *****yarın ilk iş bu delete olayına bak.
+  void deleteSlot(Slot slot, BuildContext context, int index) async {
+    DateTime dateTime = DateTime.parse(selectDate);
+    int day = dateTime.day;
+    int month = dateTime.month;
+    int year = dateTime.year;
+   var _date = "$day-$month-$year";
+   
+
+
     progressDialog = ProgressDialog(context, type: ProgressDialogType.Normal);
     progressDialog.show();
-    FirebaseAuth.instance.currentUser().then((user) {
+   await  FirebaseAuth.instance.currentUser().then((user) {
       grounds_db
           .child(user.uid)
           .child("Slots")
-          .child(slot.date)
+          .child(_date) //??
           .child(slot.slot_id)
           .remove()
           .whenComplete(() {
         slots.removeAt(index);
-        //progressDialog.dismiss();
+        progressDialog.hide();
         setState(() {
           Fluttertoast.showToast(
               msg: "Slot Deleted Successfully",
