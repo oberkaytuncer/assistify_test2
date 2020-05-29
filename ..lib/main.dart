@@ -73,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-      /*
+      
     //Firebase Messaging Setup Configuration in Splash Screen
     _firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) async
     {
@@ -103,7 +103,7 @@ class _SplashScreenState extends State<SplashScreen> {
     var iOS = new IOSInitializationSettings();
     var initSettings = new InitializationSettings(android, iOS);
     flutterLocalNotificationsPlugin.initialize(initSettings,onSelectNotification: onSelectNotification);
-    */
+  
     getData();
     super.initState();
 

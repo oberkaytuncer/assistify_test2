@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_messaging_app/app/EditSlotScreen.dart';
+import 'package:flutter_messaging_app/app/edit_slot_screen.dart';
 import 'package:flutter_messaging_app/app/add_slot_daily.dart';
 import 'package:flutter_messaging_app/app/add_slot_monthly.dart';
 import 'package:flutter_messaging_app/model/slot.dart';

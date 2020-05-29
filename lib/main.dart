@@ -5,6 +5,10 @@ import 'package:flutter_messaging_app/locator.dart';
 import 'package:flutter_messaging_app/view_model/user_model.dart';
 import 'package:provider/provider.dart';
 
+
+
+
+
 void main() {
   setupLocator();
   runApp(
