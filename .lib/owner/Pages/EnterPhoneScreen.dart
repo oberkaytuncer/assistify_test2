@@ -190,7 +190,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
         (AuthCredential user) {
       Timer.periodic(const Duration(seconds: 7), (timer) {
         timer.cancel();
-        //progressDialog.dismiss();
+        //progressDialog.hide();
         Fluttertoast.showToast(
             msg: "Issue with This Number./n Try Again with Another number or signIn Anonmously",
             toastLength: Toast.LENGTH_SHORT,
@@ -506,7 +506,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
 
   //Implementation of User's SignIn
   signIn_User(BuildContext context, FirebaseUser userr) {
-  //  progressDialog.dismiss();
+  //  progressDialog.hide();
     ground_owners_db.child(userr.uid).once().then((DataSnapshot datasnapshot) {
       if (datasnapshot == null || datasnapshot.value == null) {
         user_defualts

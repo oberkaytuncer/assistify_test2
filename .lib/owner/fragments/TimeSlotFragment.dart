@@ -255,7 +255,7 @@ class _TimeSlotFragmentState extends State<TimeSlotFragment> {
           .remove()
           .whenComplete(() {
         slots.removeAt(index);
-        //progressDialog.dismiss();
+        //progressDialog.hide();
         setState(() {
           Fluttertoast.showToast(
               msg: "Slot Deleted Successfully",
@@ -264,7 +264,7 @@ class _TimeSlotFragmentState extends State<TimeSlotFragment> {
               timeInSecForIosWeb: 1);
         });
       }).catchError((e) {
-        //  progressDialog.dismiss();
+        //  progressDialog.hide();
         Fluttertoast.showToast(
             msg: "There is some Error.Try Again",
             toastLength: Toast.LENGTH_SHORT,

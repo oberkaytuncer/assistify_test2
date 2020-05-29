@@ -387,7 +387,7 @@ class _ChallengeListFragmentState extends State<ChallengeListFragment> {
         }
       });
 
-      //progressDialog.dismiss();
+      //progressDialog.hide();
       setState(() {
         pendingRequests.removeAt(index);
       });
@@ -396,7 +396,7 @@ class _ChallengeListFragmentState extends State<ChallengeListFragment> {
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1);
     }).catchError((e) {
-     // progressDialog.dismiss();
+     // progressDialog.hide();
       Fluttertoast.showToast(msg: "Not Rejected.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
@@ -503,7 +503,7 @@ class _ChallengeListFragmentState extends State<ChallengeListFragment> {
                 callOnFcmApiSendPushNotificationstoAll(
                     playersList, title1, body1);
               }
-            //  progressDialog.dismiss();
+            //  progressDialog.hide();
               setState(() {
                 pendingRequests.removeAt(index);
               });
@@ -517,7 +517,7 @@ class _ChallengeListFragmentState extends State<ChallengeListFragment> {
         }
       });
     }).catchError((e) {
-     // progressDialog.dismiss();
+     // progressDialog.hide();
       Fluttertoast.showToast(
           msg: "Not Rejected.",
           toastLength: Toast.LENGTH_SHORT,

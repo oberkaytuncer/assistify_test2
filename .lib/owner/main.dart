@@ -18,15 +18,13 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'dart:io' show Platform;
 
-var MainActivityRoute = <String,WidgetBuilder>
-{
+var MainActivityRoute = <String, WidgetBuilder>{
   '/MainScreen': (BuildContext contaxt) => MainScreen(),
   '/SignUpScreen': (BuildContext contaxt) => SignUpScreen(),
   '/HomeScreen': (BuildContext contaxt) => HomeScreen()
 };
 
 Future<void> main() async {
-
   /*
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -43,13 +41,12 @@ Future<void> main() async {
       databaseURL: 'https://fusole-mania-project.firebaseio.com/',
     ),
   );*/
-      runApp(new MaterialApp(
+  runApp(new MaterialApp(
     theme:
-    ThemeData(primaryColor: HexColor("39B54A"), accentColor: Colors.green),
+        ThemeData(primaryColor: HexColor("39B54A"), accentColor: Colors.green),
     debugShowCheckedModeBanner: false,
     home: SplashScreen(),
     routes: MainActivityRoute,
-
   ));
 }
 
@@ -59,9 +56,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   //final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  DatabaseReference ref = FirebaseDatabase.instance.reference().child("users_tokens");
+  DatabaseReference ref =
+      FirebaseDatabase.instance.reference().child("users_tokens");
   //FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   User_Defualts user_defaults = new User_Defualts();
@@ -73,19 +70,16 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-      
+    /*
     //Firebase Messaging Setup Configuration in Splash Screen
-    _firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) async
-    {
+    _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
       String title = message['notification']['title'];
       String body = message['notification']['body'];
-      showNotification(title,body);
-
-    },onLaunch: (Map<String, dynamic> message) async
-    {
+      showNotification(title, body);
+    }, onLaunch: (Map<String, dynamic> message) async {
       final notification = message['data'];
-    }, onResume: (Map<String, dynamic> message) async
-    {
+    }, onResume: (Map<String, dynamic> message) async {
       final notification = message['data'];
       setState(() {});
     });
@@ -94,77 +88,83 @@ class _SplashScreenState extends State<SplashScreen> {
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-    });
+        .listen((IosNotificationSettings settings) {});
 
     //Local Notification Settings.
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
     var iOS = new IOSInitializationSettings();
     var initSettings = new InitializationSettings(android, iOS);
-    flutterLocalNotificationsPlugin.initialize(initSettings,onSelectNotification: onSelectNotification);
-  
+    flutterLocalNotificationsPlugin.initialize(initSettings,
+        onSelectNotification: onSelectNotification);
+        */
     getData();
     super.initState();
-
   }
 
   //Check and Get Current User Data
-  void getData() async
-  {
+  void getData() async {
     _phone = await user_defaults.getUserPhoneNumber();
     _user_id = await user_defaults.getUserUserID();
     _user_name = await user_defaults.getUserName();
     _user_ground = await user_defaults.getGroundName();
 
-    if(_user_ground==null || _user_ground=="") {
+    if (_user_ground == null || _user_ground == "") {
       if (_user_name == null || _user_name == "") {
         if (_phone != null && _phone != "") {
           if (_user_id != null && _user_id != "") {
-            Timer(Duration(seconds: 1), () =>Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context) {
-              return SignUpScreen();
-            })));
+            Timer(
+                Duration(seconds: 1),
+                () => Navigator.pushReplacement(context,
+                        new MaterialPageRoute(builder: (context) {
+                      return SignUpScreen();
+                    })));
+          } else {
+            Timer(
+                Duration(seconds: 1),
+                () => Navigator.pushReplacement(context,
+                        new MaterialPageRoute(builder: (context) {
+                      return MainScreen();
+                    })));
           }
-          else {
-            Timer(Duration(seconds: 1), () =>Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context) {
-              return MainScreen();
-            })));
-          }
-        }
-        else {
-          Timer(Duration(seconds: 1), () =>Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context) {
-            return MainScreen();
-          })));
+        } else {
+          Timer(
+              Duration(seconds: 1),
+              () => Navigator.pushReplacement(context,
+                      new MaterialPageRoute(builder: (context) {
+                    return MainScreen();
+                  })));
         }
       } else {
-        if(FirebaseAuth.instance.currentUser()==null)
-          {
-            Timer(Duration(seconds: 1), () =>Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context) {
-              return MainScreen();
-            })));
-          }
-        else {
-          Timer(Duration(seconds: 1), () =>
-              Navigator.pushReplacement(
-                  context, new MaterialPageRoute(builder: (context) {
-                return HomeScreen();
-              })));
+        if (FirebaseAuth.instance.currentUser() == null) {
+          Timer(
+              Duration(seconds: 1),
+              () => Navigator.pushReplacement(context,
+                      new MaterialPageRoute(builder: (context) {
+                    return MainScreen();
+                  })));
+        } else {
+          Timer(
+              Duration(seconds: 1),
+              () => Navigator.pushReplacement(context,
+                      new MaterialPageRoute(builder: (context) {
+                    return HomeScreen();
+                  })));
         }
       }
-    }else
-      {
-       // updateFirebaseToken();
-      }
+    } else {
+      // updateFirebaseToken();
+    }
   }
+
   //Notification Click
-  Future onSelectNotification(String payload)
-  {
+  Future onSelectNotification(String payload) {
     Navigator.pushReplacement(context,
         new MaterialPageRoute(builder: (context) {
-          return SplashScreen();
-        }));
+      return SplashScreen();
+    }));
   }
-    /*
+  /*
   //Show Notification
   showNotification(String title,String body) async
   {
@@ -181,16 +181,16 @@ class _SplashScreenState extends State<SplashScreen> {
       DeviceOrientation.portraitDown,
     ]);
     return Scaffold(
-      body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset('assets/logo.png',width: 330,height: 170),
-          ],
-        ),
-      )
-    );
+        body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset('assets/logo.png', width: 330, height: 170),
+        ],
+      ),
+    ));
   }
-    /*
+  /*
   //Update User Token in Firebase
   void updateFirebaseToken() {
     String _token;

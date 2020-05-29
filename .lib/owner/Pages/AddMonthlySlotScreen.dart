@@ -562,7 +562,7 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 2);
-      // progressDialog.dismiss();
+      // progressDialog.hide();
     } else {
       print("Uploading Data1");
       //Insert 30 Days Data
@@ -600,7 +600,7 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 2);
-              // progressDialog.dismiss();
+              // progressDialog.hide();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => HomeScreen()),
                   (Route<dynamic> route) => false);

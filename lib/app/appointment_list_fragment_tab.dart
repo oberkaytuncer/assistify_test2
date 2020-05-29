@@ -10,12 +10,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 
-class ChallengeListFragment extends StatefulWidget {
+class AppointmentListFragment extends StatefulWidget {
   @override
-  _ChallengeListFragmentState createState() => _ChallengeListFragmentState();
+  _AppointmentListFragmentState createState() => _AppointmentListFragmentState();
 }
 
-class _ChallengeListFragmentState extends State<ChallengeListFragment> {
+class _AppointmentListFragmentState extends State<AppointmentListFragment> {
   ProgressDialog progressDialog;
   FirebaseDatabase database;
 
@@ -387,7 +387,7 @@ class _ChallengeListFragmentState extends State<ChallengeListFragment> {
         }
       });
 
-      //progressDialog.dismiss();
+      //progressDialog.hide();
       setState(() {
         pendingRequests.removeAt(index);
       });
@@ -396,7 +396,7 @@ class _ChallengeListFragmentState extends State<ChallengeListFragment> {
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1);
     }).catchError((e) {
-     // progressDialog.dismiss();
+     // progressDialog.hide();
       Fluttertoast.showToast(msg: "Not Rejected.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
@@ -503,7 +503,7 @@ class _ChallengeListFragmentState extends State<ChallengeListFragment> {
                 callOnFcmApiSendPushNotificationstoAll(
                     playersList, title1, body1);
               }
-            //  progressDialog.dismiss();
+            //  progressDialog.hide();
               setState(() {
                 pendingRequests.removeAt(index);
               });
@@ -517,7 +517,7 @@ class _ChallengeListFragmentState extends State<ChallengeListFragment> {
         }
       });
     }).catchError((e) {
-     // progressDialog.dismiss();
+     // progressDialog.hide();
       Fluttertoast.showToast(
           msg: "Not Rejected.",
           toastLength: Toast.LENGTH_SHORT,

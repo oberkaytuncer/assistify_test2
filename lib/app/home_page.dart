@@ -1,6 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_messaging_app/app/appointment_list_fragment_tab.dart';
 import 'package:flutter_messaging_app/app/dashboard_tab.dart';
+import 'package:flutter_messaging_app/app/landing_page.dart';
 import 'package:flutter_messaging_app/app/my_conversation_tab.dart';
 import 'package:flutter_messaging_app/app/my_custom_bottom_navi.dart';
 import 'package:flutter_messaging_app/app/profile_tab.dart';
@@ -28,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   TabItem _currentTab = TabItem.Users;
 
   Map<TabItem, GlobalKey<NavigatorState>> navigatorsKeys = {
+    TabItem.AppointmentListFragmentTab: GlobalKey<NavigatorState>(),
     TabItem.Dashboard: GlobalKey<NavigatorState>(),
     TabItem.Users: GlobalKey<NavigatorState>(),
     TabItem.MyChat: GlobalKey<NavigatorState>(),
@@ -36,7 +40,8 @@ class _HomePageState extends State<HomePage> {
 
   Map<TabItem, Widget> allTabs() {
     return {
-      TabItem.Dashboard : DashboardTab(),
+      TabItem.AppointmentListFragmentTab: AppointmentListFragment(),
+      TabItem.Dashboard: DashboardTab(),
       TabItem.Users: ChangeNotifierProvider(
         create: (context) => AllUsersViewModel(),
         child: UsersTab(),
@@ -49,14 +54,52 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-     NotificationHandler().initializeFCMNotification(context);
-   
+    // NotificationHandler().initializeFCMNotification(context);
 
+    //Firebase Messaging Setup Configuration in Splash Screen
+    _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+      String title = message['notification']['title'];
+      String body = message['notification']['body'];
+      showNotification(title, body);
+    }, onLaunch: (Map<String, dynamic> message) async {
+      final notification = message['data'];
+    }, onResume: (Map<String, dynamic> message) async {
+      final notification = message['data'];
+      setState(() {});
+    });
 
+    //Register Notification Settings for Android and iOS
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {});
 
+    //Local Notification Settings.
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iOS = new IOSInitializationSettings();
+    var initSettings = new InitializationSettings(android, iOS);
+    flutterLocalNotificationsPlugin.initialize(
+      initSettings,
+      onSelectNotification: onSelectNotification,
+    );
+  }
 
+    //Show Notification
+  showNotification(String title, String body) async {
+    var android = new AndroidNotificationDetails(
+        'channel Id', 'channel Name', 'channel Description');
+    var iOS = new IOSNotificationDetails();
+    var platform = new NotificationDetails(android, iOS);
+    await flutterLocalNotificationsPlugin.show(0, title, body, platform);
+  }
 
-   
+  Future onSelectNotification(String payload) {
+    Navigator.pushReplacement(context,
+        new MaterialPageRoute(builder: (context) {
+      return LandingPage();
+    }));
   }
 
   @override

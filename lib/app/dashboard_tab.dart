@@ -273,7 +273,7 @@ class _DashboardTabState extends State<DashboardTab> {
               timeInSecForIosWeb: 1);
         });
       }).catchError((e) {
-        //  progressDialog.dismiss();
+        //  progressDialog.hide();
         Fluttertoast.showToast(
             msg: "There is some Error.Try Again",
             toastLength: Toast.LENGTH_SHORT,
