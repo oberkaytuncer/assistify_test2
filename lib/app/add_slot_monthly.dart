@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/app/dashboard_tab.dart';
+import 'package:flutter_messaging_app/model/slot.dart';
 import 'package:flutter_messaging_app/utils/HexColor.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
@@ -109,7 +110,7 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
 
             int hourend = endTime.hour;
             int minutesend = endTime.minute;
-             endTimeFieldController.text = "${hourend} : ${minutesend}";
+            endTimeFieldController.text = "${hourend} : ${minutesend}";
             //String endTimePeriod = current_time.period.toString();
             selectedStartTime = "$hourstart:$minutesstart";
             selectedEndTime = "$hourend:$minutesend";
@@ -339,7 +340,9 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
                                                                 Colors.green)),
                                               ),
                                             ),
-                                            SizedBox(height: 20,),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
                                             SizedBox(
                                               width: double.infinity,
                                               height: 50.0,
@@ -510,14 +513,14 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
           .child(dateStr)
           .once()
           .then((DataSnapshot dataSnapshot) {
-            var keys = dataSnapshot.value;
-            count = count + 1;
-           setState(() {
-            if (keys == null) {
-                datesList.add(dateStr);
-                print("Date: - ${datesList}");
-             }
-          });
+        var keys = dataSnapshot.value;
+        count = count + 1;
+        setState(() {
+          if (keys == null) {
+            datesList.add(dateStr);
+            print("Date: - ${datesList}");
+          }
+        });
         if (count == 30) {
           print("Uploading Data");
           //Upload Data
@@ -529,7 +532,7 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
   }
 
   void uploadSlotsData(
-      ProgressDialog progressDialog, BuildContext context, String id)   {
+      ProgressDialog progressDialog, BuildContext context, String id) {
     Fluttertoast.showToast(
         msg: "Total ${datesList.length} days.",
         toastLength: Toast.LENGTH_SHORT,
@@ -547,16 +550,18 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
       print("Uploading Data1");
       //Insert 30 Days Data
       int count = 0;
+
       for (int i = 0; i < datesList.length; i++) {
         var uuid = new Uuid();
-       
+        Map<String, dynamic> data = {};
+
         if (i == 0) {
           for (int j = 0; j < startTimes.length; j++) {
             String random_id = uuid.v1().toString();
             String startTime = startTimes.elementAt(j);
             String endTime = endTimes.elementAt(j);
-       
-            var data = {
+
+            data = {
               "slot_id": random_id,
               "time": "$startTime - $endTime",
               "startTime": startTime,
@@ -566,13 +571,19 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
               "team1_name": "",
               "team2_logo": "",
               "team2_name": "",
-              "date": datesList.elementAt(i),
+              "date": '',
             };
-         
+
             map1[random_id] = data;
           }
         }
-           ref.child(id).child("Slots").child(datesList.elementAt(i)).update(map1)
+      //burada map1 e date eklemesi yapıyorum :)
+        map1.forEach((k, v) {
+          Map<String, dynamic> value = v;
+          value["date"] = datesList.elementAt(i);
+        });
+
+        ref.child(id).child("Slots").child(datesList.elementAt(i)).update(map1)
           ..whenComplete(() {
             count = count + 1;
             print("Count : $count and Length: ${datesList.length} ");
@@ -583,7 +594,7 @@ class _AddMonthlySlotScreenState extends State<AddMonthlySlotScreen> {
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 2);
-               progressDialog.hide();
+              progressDialog.hide();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => DashboardTab()),
                   (Route<dynamic> route) => false);
