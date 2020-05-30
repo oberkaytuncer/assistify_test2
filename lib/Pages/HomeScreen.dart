@@ -1,9 +1,7 @@
-import 'dart:async';
-
 import 'package:badges/badges.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_messaging_app/Database/Firebase.dart';
+
 import 'package:flutter_messaging_app/Pages/MainScreen.dart';
 import 'package:flutter_messaging_app/Pages/PlayerRequestsFragment.dart';
 import 'package:flutter_messaging_app/Pages/RegisterPlayerScreen.dart';
@@ -13,24 +11,13 @@ import 'package:flutter_messaging_app/fragments/RequestListFragment.dart';
 import 'package:flutter_messaging_app/fragments/TeamListFragment.dart';
 import 'package:flutter_messaging_app/fragments/UserHomeFragment.dart';
 import 'package:flutter_messaging_app/utils/HexColor.dart';
-import 'package:flutter_messaging_app/utils/strings.dart';
-import 'package:flutter_messaging_app/utils/strings.dart';
-import 'package:flutter_messaging_app/fragments/UserProfileFragment.dart';
 import 'package:flutter_messaging_app/Pages/EnterPhoneScreen.dart';
 import 'package:flutter/services.dart';
 
-import 'package:country_pickers/country.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_messaging_app/Pages/SignUpScreen.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_messaging_app/utils/User_Defaults.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-
-import 'package:flutter_messaging_app/Models/User.dart';
-
 import 'EditProfileScreen.dart';
 import 'ProfileScreen.dart';
 
@@ -87,19 +74,19 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  void _getUserData() {
-    FirebaseAuth.instance.currentUser().then((user) {
+  void _getUserData() async {
+    await FirebaseAuth.instance.currentUser().then((user) async  {
       uid = user.uid;
-      print("USer id " + uid);
-      ref.child(uid).once().then((DataSnapshot datasnapshot) {
+      print("USer idddd " + uid);
+     await ref.child(uid).once().then((DataSnapshot datasnapshot) {
         if (datasnapshot != null) {
           setState(() {
-            print("Data");
+            print("Dataaaaas");
             Map<dynamic, dynamic> user = datasnapshot.value;
             _drawerUserName = user['name'];
             print("Hellp $_drawerUserName");
             _drawerUserEmail = user['email'];
-            print(_drawerUserEmail);
+           print(_drawerUserEmail);
             drawer_picture = user['picture'];
             player_status = user['role'];
             team = user['team'];
@@ -108,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       });
 
-      joinRequests
+      await joinRequests
           .child("pending_requests")
           .child(user.uid)
           .once()
@@ -127,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       });
 
-      joinRequests1
+     await joinRequests1
           .child("pending_challenges")
           .child(user.uid)
           .once()

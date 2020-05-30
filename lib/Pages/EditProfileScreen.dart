@@ -5,7 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_messaging_app/Models/User.dart';
 import 'package:flutter_messaging_app/utils/HexColor.dart';
-import 'package:flutter_messaging_app/utils/User_Defaults.dart';
+
 import 'package:flutter_messaging_app/Models/User.dart';
 import 'package:flutter_messaging_app/utils/HexColor.dart';
 import 'package:flutter_messaging_app/utils/strings.dart';

@@ -1,6 +1,4 @@
-
 import 'dart:ui';
-
 
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {

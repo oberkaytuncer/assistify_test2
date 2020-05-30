@@ -2,33 +2,21 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart' as prefix0;
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_messaging_app/Models/Slot.dart';
-import 'package:flutter_messaging_app/Pages/HomeScreen.dart';
-import 'package:flutter_messaging_app/main.dart';
+
 import 'package:flutter_messaging_app/utils/HexColor.dart';
-import 'package:flutter_messaging_app/utils/strings.dart';
-import 'package:country_pickers/country_pickers.dart';
-import 'package:country_pickers/country.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_messaging_app/Pages/SignUpScreen.dart';
-import 'package:flutter_messaging_app/utils/styles.dart';
+
 import 'package:http/http.dart';
-import 'package:progress_dialog/progress_dialog.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter_messaging_app/utils/User_Defaults.dart';
+
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:flutter_messaging_app/Models/User.dart';
-
 import 'dart:io' show Platform;
 
-import 'package:flutter_messaging_app/main.dart';
 import 'package:video_player/video_player.dart';
 
 final String token = 'c2928278d71247c3bcb7c4ccc89cc2c6';
@@ -57,7 +45,7 @@ class _UserHomeFragmentState extends State<UserHomeFragment> {
   List<Slot> slots = null;
   List<match> TmpData;
   @override
-  void initState() {
+  void initState()   {
     // TODO: implement initState
     super.initState();
     _controller = VideoPlayerController.asset("assets/demo.webm")
@@ -68,15 +56,15 @@ class _UserHomeFragmentState extends State<UserHomeFragment> {
     _controller.setLooping(true);
     _controller.setVolume(0.0);
 
-    grouds.once().then((DataSnapshot datasnapshot) {
+     grouds.once().then((DataSnapshot datasnapshot) {
       if (datasnapshot != null && datasnapshot.value != null) {
         var keys = datasnapshot.value.keys;
         var data = datasnapshot.value;
-        //print("DataSnap: ${datasnapshot.value}");
+        print("DataSnapppppppsd: ${datasnapshot.value}");
         for (var key in keys) {
           slots = [];
-          setState(() {
-            grouds.child(key).child("Slots").once().then((DataSnapshot slotss) {
+          setState(()  {
+             grouds.child(key).child("Slots").once().then((DataSnapshot slotss) {
               if (slotss.value != null) {
                 for (var slotsData in slotss.value.keys) {
                   grouds
@@ -178,8 +166,7 @@ class _UserHomeFragmentState extends State<UserHomeFragment> {
                                 items: [slots.length].map((i) {
                                   return Builder(
                                     builder: (BuildContext context) {
-                                      return sliderItem(
-                                          context, "ground", i - 1);
+                                      return sliderItem(context, "ground", i - 1);
                                     },
                                   );
                                 }).toList(),
