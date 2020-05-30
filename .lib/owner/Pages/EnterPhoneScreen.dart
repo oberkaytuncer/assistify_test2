@@ -31,7 +31,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
 
   ProgressDialog progressDialog;
   String phone_no = "0";
-  String country_code = "+92";
+  String country_code = "+90";
   String smsCode;
   String verficationID;
   FirebaseDatabase database;
@@ -760,7 +760,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                                   children: <Widget>[
                                     MaskedTextField(
                                       key: _maskedPhoneKey,
-                                      mask: "3xxxxxxxxx",
+                                      mask: "5xxxxxxxxx",
                                       keyboardType: TextInputType.number,
                                       maskedTextFieldController:
                                       phoneNumberController,

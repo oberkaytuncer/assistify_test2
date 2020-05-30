@@ -22,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   void _loginBtnPress(BuildContext context)
   {
       Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context){
-        return HomeScreen();
+        return EnterPhoneScreen();
       }));
 
   }

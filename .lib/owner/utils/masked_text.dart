@@ -109,9 +109,9 @@ class MaskedTextFieldState extends State<MaskedTextField> {
     String text = widget.maskedTextFieldController.text.trim();
     print("Filters Text ${filteredMasks}");
 
-    text = text.replaceAll("+92", "");
+    text = text.replaceAll("+90", "");
     text = text.replaceAll(" ", "");
-    text = text.replaceAll("(92)", "");
+    text = text.replaceAll("(90)", "");
 
     return text;
   }

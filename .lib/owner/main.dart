@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 //import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 //import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_messaging_app/Pages/GroundSignUpScreen.dart';
 import 'package:flutter_messaging_app/Pages/HomeScreen.dart';
@@ -56,10 +58,10 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  //final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   DatabaseReference ref =
       FirebaseDatabase.instance.reference().child("users_tokens");
-  //FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   User_Defualts user_defaults = new User_Defualts();
 
@@ -70,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    /*
+
     //Firebase Messaging Setup Configuration in Splash Screen
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
@@ -97,7 +99,7 @@ class _SplashScreenState extends State<SplashScreen> {
     var initSettings = new InitializationSettings(android, iOS);
     flutterLocalNotificationsPlugin.initialize(initSettings,
         onSelectNotification: onSelectNotification);
-        */
+        
     getData();
     super.initState();
   }
@@ -148,12 +150,12 @@ class _SplashScreenState extends State<SplashScreen> {
               Duration(seconds: 1),
               () => Navigator.pushReplacement(context,
                       new MaterialPageRoute(builder: (context) {
-                    return HomeScreen();
+                    return GroundSignUpScreen();
                   })));
         }
       }
     } else {
-      // updateFirebaseToken();
+       updateFirebaseToken();
     }
   }
 
@@ -164,7 +166,7 @@ class _SplashScreenState extends State<SplashScreen> {
       return SplashScreen();
     }));
   }
-  /*
+
   //Show Notification
   showNotification(String title,String body) async
   {
@@ -172,7 +174,7 @@ class _SplashScreenState extends State<SplashScreen> {
     var iOS = new IOSNotificationDetails();
     var platform = new NotificationDetails(android, iOS);
     await flutterLocalNotificationsPlugin.show(0, title, body, platform);
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +192,7 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     ));
   }
-  /*
+
   //Update User Token in Firebase
   void updateFirebaseToken() {
     String _token;
@@ -222,5 +224,5 @@ class _SplashScreenState extends State<SplashScreen> {
         ref.child(user.uid).remove();
       });
     }
-  }*/
+  }
 }
