@@ -1,18 +1,11 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_messaging_app/Models/User.dart';
 import 'package:flutter_messaging_app/utils/HexColor.dart';
-import 'package:flutter_messaging_app/utils/strings.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:country_pickers/country_pickers.dart';
-import 'package:country_pickers/country.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_messaging_app/fragments/TimeSlotFragment.dart';
 import 'package:flutter_messaging_app/Pages/HomeScreen.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
@@ -20,7 +13,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:flutter_messaging_app/utils/User_Defaults.dart';
-import 'package:flutter_messaging_app/Models/User.dart';
+
 
 class RegisterTeamScreen extends StatefulWidget {
   @override

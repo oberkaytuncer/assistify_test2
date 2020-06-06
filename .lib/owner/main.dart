@@ -11,12 +11,9 @@ import 'package:flutter_messaging_app/Pages/MainScreen.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_messaging_app/Pages/SignUpScreen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'utils/HexColor.dart';
 import 'package:flutter_messaging_app/utils/User_Defaults.dart';
-
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 import 'dart:io' show Platform;
 

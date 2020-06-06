@@ -31,14 +31,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  
   User_Defualts user_defualts = new User_Defualts();
 
-  DatabaseReference ground_owners_db =
-      FirebaseDatabase.instance.reference().child("ground_owners");
-  DatabaseReference users_tokens_db =
-      FirebaseDatabase.instance.reference().child("users_tokens");
-  DatabaseReference team_request_db =
-      FirebaseDatabase.instance.reference().child("team_request");
+  DatabaseReference ground_owners_db =      FirebaseDatabase.instance.reference().child("ground_owners");
+  DatabaseReference users_tokens_db =      FirebaseDatabase.instance.reference().child("users_tokens");
+  //DatabaseReference team_request_db =      FirebaseDatabase.instance.reference().child("team_request");
 
   String uid = "";
   int _selectedPage = 0;
@@ -102,6 +101,8 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+
+/*
   //Implementation of Become Player
   void become_player(BuildContext context) {
     Navigator.push(context, new MaterialPageRoute(builder: (context) {
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
